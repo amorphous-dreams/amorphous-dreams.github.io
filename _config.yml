@@ -1,0 +1,35 @@
+title: Amorphous Dreams Cabal Pages
+url: "https://amorphous-dreams.github.io"
+baseurl: ""
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+plugins:
+  - jekyll-optional-front-matter
+  - jekyll-relative-links
+source: .
+include: [".htaccess"]
+exclude:
+  - .bundle
+  - .bundle/**
+  - vendor
+  - vendor/**
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+# Global publishing settings
+future: true
+permalink: /vault/:title/
+# Front Matter Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+  - scope:
+      path: "vault"
+      type: "pages"
+    values:
+      body_class: "book-chapter"
