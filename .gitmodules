@@ -1,0 +1,2 @@
+# Git submodules for content repositories
+# Add submodules with: git submodule add <repo-url> vault/<folder-name>

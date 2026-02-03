@@ -1,0 +1,6 @@
+root:
+  return_href: "/"
+  vaults:
+    - title: "Vault"
+      href: "/vault"
+      description: "Browse all content"
