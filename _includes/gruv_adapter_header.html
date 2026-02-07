@@ -1,0 +1,53 @@
+<header class="dreamnet-header">
+  <div class="sigil">Noospheric Dreamnet Node</div>
+  <h1>{{ site.title | default: "Amorphous Dreams Cabal" }}</h1>
+  <p class="lead">{{ page.subtitle | default: site.lead | default: "A navigational console for the Dreamnet constellation." }}</p>
+
+  {% assign request_url = page.url | default: '/' %}
+  {% assign vault_parent_href = nil %}
+  {% assign vault_parent_label = nil %}
+  {% if request_url contains '/vault/' %}
+    {% if request_url == '/vault/' or request_url == '/vault' %}
+      {% assign vault_parent_href = '/' %}
+      {% assign vault_parent_label = 'DreamNet Home' %}
+    {% elsif request_url contains '/vault/synthetic-dream-machine/' or request_url contains '/vault/Synthetic-Dream-Machine/' %}
+      {% assign vault_parent_href = '/vault/synthetic-dream-machine/' %}
+      {% assign vault_parent_label = 'SDM Nexus' %}
+    {% else %}
+      {% assign request_parts = request_url | split: '/' %}
+      {% assign vault_section = request_parts[2] %}
+      {% if vault_section and vault_section != '' %}
+        {% assign vault_parent_href = '/vault/' | append: vault_section | append: '/' %}
+        {% assign vault_parent_label = vault_section | replace: '-', ' ' | replace: '_', ' ' | capitalize %}
+      {% else %}
+        {% assign vault_parent_href = '/vault/' %}
+        {% assign vault_parent_label = 'Vault' %}
+      {% endif %}
+    {% endif %}
+  {% endif %}
+
+  <nav class="header-nav header-nav--global" aria-label="Global navigation">
+    <a class="header-link header-home-link"
+       href="{{ '/' | relative_url }}"
+       {% if request_url == '/' %}aria-current="page"{% endif %}>
+      DreamNet Home
+    </a>
+    <a class="header-link"
+       href="{{ '/vault/' | relative_url }}"
+       {% if request_url contains '/vault/' %}aria-current="page"{% endif %}>
+      Vault
+    </a>
+    {% if vault_parent_href and vault_parent_href != request_url %}
+      <a class="header-link header-link--parent"
+         href="{{ vault_parent_href | relative_url }}">
+        {{ vault_parent_label | default: 'Parent' }}
+      </a>
+    {% endif %}
+    <a class="header-link header-link--external"
+       href="{{ site.repo | default: 'https://github.com/amorphous-dreams/amorphous-dreams.github.io' }}"
+       target="_blank"
+       rel="noopener">
+      Reference <span class="header-link-external" aria-hidden="true">↗</span>
+    </a>
+  </nav>
+</header>

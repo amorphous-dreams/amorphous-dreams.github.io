@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en">
+  {% include gruv_adapter_head.html %}
+  <body class="{{ page.body_class | default: '' }}">
+    <div class="container">
+      {% include gruv_adapter_header.html %}
+      <main>
+        {{ content }}
+      </main>
+      {% include gruv_adapter_footer.html %}
+    </div>
+  </body>
+</html>

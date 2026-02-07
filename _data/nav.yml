@@ -1,6 +1,7 @@
-root:
-  return_href: "/"
-  vaults:
-    - title: "Vault"
-      href: "/vault"
-      description: "Browse all content"
+vault_nodes:
+  - label: "Synthetic Dream Machine"
+    href: "/vault/synthetic-dream-machine/"
+    summary: "Canonical SDM, Amorphous Dreams development, and Wizard Thief Fighter priority line."
+  - label: "More Vaults Soon"
+    href: "/vault/"
+    summary: "Placeholder route for additional modular vaults."
