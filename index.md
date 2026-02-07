@@ -1,7 +1,8 @@
 ---
 title: Amorphous Dreams Cabal
 subtitle: "A collection of shared worlds and collaborative storytelling"
-layout: default
+layout: gruv_default_adapter
+header_nav_context: root
 ---
 
 ## Welcome
@@ -12,7 +13,7 @@ This is the home of the Amorphous Dreams Cabal - a collaborative space for share
 
 Explore our collection of worlds:
 
-- [Vault](/vault) - Browse all books and content
+{% include nav-dashboard.html heading="Vault Nodes" items=site.data.nav.vault_nodes %}
 
 ---
 

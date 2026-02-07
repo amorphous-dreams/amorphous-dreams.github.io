@@ -1,7 +1,8 @@
 ---
 title: Vault
 subtitle: "Browse the collection"
-layout: default
+layout: gruv_vault_index_adapter
+header_nav_context: vaults
 ---
 
 ## The Vault

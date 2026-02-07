@@ -1,2 +1,11 @@
 # Git submodules for content repositories
 # Add submodules with: git submodule add <repo-url> vault/<folder-name>
+[submodule "vault/Synthetic-Dream-Machine"]
+	path = vault/Synthetic-Dream-Machine
+	url = https://github.com/joshuafontany/Synthetic-Dream-Machine.git
+[submodule "_submodules/gruv-poole"]
+	path = _submodules/gruv-poole
+	url = https://github.com/joshuafontany/gruv-poole.git
+[submodule "_submodules/game-icons"]
+	path = _submodules/game-icons
+	url = https://github.com/joshuafontany/game-icons.git

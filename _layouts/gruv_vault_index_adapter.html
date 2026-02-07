@@ -1,0 +1,16 @@
+---
+layout: gruv_base_adapter
+---
+
+<div class="page-wrap">
+  <section class="card page-card">
+    <article class="markdown-body">
+      {{ content }}
+    </article>
+  </section>
+
+  {% assign vault_items = site.data.nav.vault_nodes | default: site.data.nav.root.vaults %}
+  {% if vault_items %}
+    {% include nav-dashboard.html heading="Vault Nodes" items=vault_items %}
+  {% endif %}
+</div>

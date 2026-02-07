@@ -1,0 +1,18 @@
+---
+# Gruv-poole base theme entrypoint (Phase 2).
+---
+
+@use "../_vendor/gruv-poole/_sass/typography/fonts";
+@use "../_vendor/gruv-poole/_sass/variables";
+@use "../_vendor/gruv-poole/_sass/mixins";
+@use "../_vendor/gruv-poole/_sass/components";
+@use "../_vendor/gruv-poole/_sass/base";
+@use "../_vendor/gruv-poole/_sass/typography/typography";
+@use "../_vendor/gruv-poole/_sass/grid";
+@use "../_vendor/gruv-poole/_sass/utilities";
+@use "../_vendor/gruv-poole/_sass/code/gruvbox";
+@use "../_vendor/gruv-poole/_sass/code/wrappers";
+@use "../_vendor/gruv-poole/_sass/masthead";
+@use "../_vendor/gruv-poole/_sass/posts";
+@use "../_vendor/gruv-poole/_sass/home";
+@use "../_vendor/gruv-poole/_sass/custom";

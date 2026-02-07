@@ -21,7 +21,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           submodules: recursive
+          # Use a PAT for private submodules; falls back to GITHUB_TOKEN for public
+          token: ${{ secrets.SUBMODULE_TOKEN || github.token }}
       
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -31,6 +34,9 @@ jobs:
       
       - name: Setup Pages
         uses: actions/configure-pages@v4
+
+      - name: Vendor gruv-poole theme files
+        run: make vendor-gruv-poole
       
       - name: Build with Jekyll
         run: bundle exec jekyll build

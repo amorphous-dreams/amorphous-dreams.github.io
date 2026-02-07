@@ -1,0 +1,27 @@
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  {% unless site.disable_simple_seo %}
+    {% if page.description %}
+      <meta name="description" content="{{ page.description }}" />
+    {% else %}
+      <meta name="description" content="{{ site.description }}" />
+    {% endif %}
+  {% endunless %}
+
+  <title>
+    {% if page.title %}
+      {{ page.title }} &middot; {{ site.title }}
+    {% else %}
+      {{ site.title }}
+    {% endif %}
+  </title>
+
+  <link rel="stylesheet" href="{{ '/assets/theme-gruv-poole.css' | relative_url }}" />
+  <link rel="stylesheet" href="{{ '/assets/theme-overrides.css' | relative_url }}" />
+  <link rel="stylesheet" href="{{ '/assets/css/github-markdown-gruvbox.css' | relative_url }}" />
+
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ '/assets/apple-touch-icon-precomposed.png' | relative_url }}">
+  <link rel="shortcut icon" href="{{ '/assets/favicon.ico' | relative_url }}">
+  <meta name="color-scheme" content="dark light">
+</head>

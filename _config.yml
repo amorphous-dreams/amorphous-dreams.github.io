@@ -1,10 +1,17 @@
-title: Amorphous Dreams Cabal Pages
+title: Amorphous Dreams Cabal
+tagline: Noospheric Dreamnet Node
 url: "https://amorphous-dreams.github.io"
 baseurl: ""
+repo: "https://github.com/amorphous-dreams/amorphous-dreams.github.io"
+description: "A noosphere console for the Amorphous Dreams Cabal."
+lead: "The archive Lares are listening..."
 markdown: kramdown
 kramdown:
   input: GFM
   hard_wrap: false
+sass:
+  load_paths:
+    - _vendor/gruv-poole/_sass
 plugins:
   - jekyll-optional-front-matter
   - jekyll-relative-links
@@ -20,6 +27,7 @@ exclude:
   - README.md
 # Global publishing settings
 future: true
+unpublished: true
 permalink: /vault/:title/
 # Front Matter Defaults
 defaults:
@@ -27,9 +35,10 @@ defaults:
       path: ""
       type: "pages"
     values:
-      layout: "default"
+      layout: "gruv_default_adapter"
   - scope:
       path: "vault"
       type: "pages"
     values:
+      layout: "gruv_book_page_adapter"
       body_class: "book-chapter"
