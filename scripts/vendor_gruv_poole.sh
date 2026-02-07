@@ -27,6 +27,14 @@ cp -a "${SRC_DIR}/assets" "${DEST_DIR}/"
 cp -a "${SRC_DIR}/LICENSE.md" "${DEST_DIR}/"
 cp -a "${SRC_DIR}/README.md" "${DEST_DIR}/UPSTREAM_README.md"
 
+# Sync runtime assets expected by compiled theme CSS.
+# theme-gruv-poole.css is emitted to /assets/, and its font URLs are /assets/fonts/...
+mkdir -p "${ROOT_DIR}/assets"
+rm -rf "${ROOT_DIR}/assets/fonts"
+cp -a "${SRC_DIR}/assets/fonts" "${ROOT_DIR}/assets/"
+cp -a "${SRC_DIR}/assets/favicon.ico" "${ROOT_DIR}/assets/favicon.ico"
+cp -a "${SRC_DIR}/assets/apple-touch-icon-precomposed.png" "${ROOT_DIR}/assets/apple-touch-icon-precomposed.png"
+
 UPSTREAM_SHA="$(git -C "${SRC_DIR}" rev-parse HEAD)"
 {
   echo "source_submodule: _submodules/gruv-poole"

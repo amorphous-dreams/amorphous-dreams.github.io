@@ -1,111 +1,28 @@
 ---
 title: Synthetic Dream Machine Nexus
-subtitle: "Noospheric dashboard for canonical SDM volumes and Amorphous Dreams development tracks."
-layout: gruv_vault_index_adapter
-header_nav_context: sdm
-body_class: archive sdm-nexus-page
+subtitle: "Main navigation dashboard for SDM, Amorphous Dreams, and Wizard Thief Fighter lines."
+layout: gruv_default_adapter
+body_class: sdm-hub
 ---
 
-{% assign sdm_pages = site.pages | sort: "path" %}
-{% assign canonical_count = 0 %}
-{% assign amorphous_count = 0 %}
+{% assign pages = site.pages | sort: "path" %}
 
-{% for p in sdm_pages %}
-  {% assign path = p.path | default: "" %}
-  {% if path contains "vault/Synthetic-Dream-Machine/" %}
-    {% unless path contains "/_agents/" or path contains "/_todo/" or path == "vault/synthetic-dream-machine.md" %}
-      {% if path contains "/Elyncia/" or path contains "/Flying_Triremes_and_Laser_Swords/" %}
-        {% assign amorphous_count = amorphous_count | plus: 1 %}
-      {% else %}
-        {% assign canonical_count = canonical_count | plus: 1 %}
-      {% endif %}
-    {% endunless %}
-  {% endif %}
-{% endfor %}
-
-<section class="nexus-shell" aria-label="Synthetic Dream Machine Navigation Dashboard">
-  <header class="nexus-hero">
-    <p class="nexus-kicker">Noospheric Dream UI</p>
-    <h2>Synthetic Dream Machine Nexus</h2>
-    <p class="nexus-intro">
-      Two content lanes: canonical SDM books by Luka Rejec, and Amorphous Dreams campaign development (Elyncia + FTLS).
-    </p>
-    <div class="nexus-stats">
-      <span class="nexus-stat"><strong>{{ canonical_count }}</strong> Canonical SDM texts</span>
-      <span class="nexus-stat"><strong>{{ amorphous_count }}</strong> Amorphous Dreams docs</span>
-    </div>
-    <div class="nexus-jump-links">
-      <a href="#synthetic-dream-machine-canon">Canonical SDM</a>
-      <a href="#amorphous-dreams">Amorphous Dreams</a>
-    </div>
+<section class="sdm-hub-shell" aria-label="Synthetic Dream Machine main dashboard">
+  <header class="sdm-hub-hero">
+    <p class="ndu-kicker">Noospheric Dream UI</p>
+    <h2>SDM Nexus</h2>
+    <p>Structured navigation for the SDM RPG corpus and development branches.</p>
   </header>
 
-  <div class="nexus-columns">
-    <section id="synthetic-dream-machine-canon" class="nexus-column nexus-column--canonical" aria-labelledby="canon-heading">
-      <header class="nexus-column-head">
-        <h3 id="canon-heading">Synthetic Dream Machine (Canonical)</h3>
-        <p>Published line and core indexes sourced from SDM canon.</p>
-      </header>
-      <div class="nexus-grid">
-      {% for p in sdm_pages %}
+  <section class="sdm-hub-section" id="sdm-core">
+    <h3>Synthetic Dream Machine</h3>
+    <h4>SDM System Reference Documents</h4>
+    <div class="sdm-hub-grid">
+      {% for p in pages %}
         {% assign path = p.path | default: "" %}
-        {% if path contains "vault/Synthetic-Dream-Machine/" %}
-          {% unless path contains "/_agents/" or path contains "/_todo/" or path == "vault/synthetic-dream-machine.md" %}
-            {% unless path contains "/Elyncia/" or path contains "/Flying_Triremes_and_Laser_Swords/" %}
-              {% assign display_title = p.title | default: p.name | replace: ".md", "" | replace: "_", " " %}
-              {% assign relative = path | remove_first: "vault/Synthetic-Dream-Machine/" %}
-              {% assign folder = relative | split: "/" | first | replace: "_", " " %}
-              {% unless relative contains "/" %}
-                {% assign folder = "Core" %}
-              {% endunless %}
-              <article class="nexus-card nexus-card--canonical">
-                <h4><a href="{{ p.url | relative_url }}">{{ display_title }}</a></h4>
-                {% if p.subtitle %}<p class="nexus-subtitle">{{ p.subtitle }}</p>{% endif %}
-                <p class="nexus-meta">
-                  <span class="nexus-chip">{{ folder }}</span>
-                  {% if p.series %}<span class="nexus-chip">{{ p.series }}</span>{% endif %}
-                  {% if p.volume %}<span class="nexus-chip">Vol {{ p.volume }}</span>{% endif %}
-                  {% if p.date %}<span class="nexus-chip">{{ p.date | date: "%Y-%m-%d" }}</span>{% endif %}
-                </p>
-              </article>
-            {% endunless %}
-          {% endunless %}
-        {% endif %}
-      {% endfor %}
-      </div>
-    </section>
-
-    <section id="amorphous-dreams" class="nexus-column nexus-column--amorphous" aria-labelledby="amorphous-heading">
-      <header class="nexus-column-head">
-        <h3 id="amorphous-heading">Amorphous Dreams</h3>
-        <p>Elyncia + Flying Triremes and Laser Swords in-development material.</p>
-      </header>
-
-      <h4 class="nexus-lane-title">Elyncia</h4>
-      <div class="nexus-grid nexus-grid--lane">
-      {% for p in sdm_pages %}
-        {% assign path = p.path | default: "" %}
-        {% if path contains "vault/Synthetic-Dream-Machine/Elyncia/" %}
-          {% unless path contains "/_agents/" or path contains "/_todo/" %}
-            {% assign display_title = p.title | default: p.name | replace: ".md", "" | replace: "_", " " %}
-            {% assign relative = path | remove_first: "vault/Synthetic-Dream-Machine/Elyncia/" %}
-            {% assign folder = relative | split: "/" | first | replace: "_", " " %}
-            <article class="nexus-card nexus-card--amorphous">
-              <h4><a href="{{ p.url | relative_url }}">{{ display_title }}</a></h4>
-              <p class="nexus-meta"><span class="nexus-chip nexus-chip--amorphous">Elyncia</span>{% if folder != display_title %}<span class="nexus-chip">{{ folder }}</span>{% endif %}</p>
-            </article>
-          {% endunless %}
-        {% endif %}
-      {% endfor %}
-      </div>
-
-      <h4 class="nexus-lane-title">Flying Triremes And Laser Swords</h4>
-      <div class="nexus-grid nexus-grid--lane">
-      {% for p in sdm_pages %}
-        {% assign path = p.path | default: "" %}
-        {% if path contains "vault/Synthetic-Dream-Machine/Flying_Triremes_and_Laser_Swords/" %}
-          {% unless path contains "/_agents/" or path contains "/_todo/" %}
-            {% assign display_title = p.title | default: p.name | replace: ".md", "" | replace: "_", " " %}
+        {% if path contains "vault/Synthetic-Dream-Machine/Synthetic_Dream_Machine_" %}
+          {% unless path contains "_agents" or path contains "_todo" %}
+            {% assign title = p.title | default: p.name | replace: ".md", "" | replace: "_", " " %}
             {% assign chapter_code = "" %}
             {% assign filename = p.name | default: "" %}
             {% if filename contains "_01_" %}{% assign chapter_code = "01" %}{% endif %}
@@ -118,17 +35,100 @@ body_class: archive sdm-nexus-page
             {% if filename contains "_08_" %}{% assign chapter_code = "08" %}{% endif %}
             {% if filename contains "_09_" %}{% assign chapter_code = "09" %}{% endif %}
             {% if filename contains "_10_" %}{% assign chapter_code = "10" %}{% endif %}
-            <article class="nexus-card nexus-card--amorphous">
-              <h4><a href="{{ p.url | relative_url }}">{{ display_title }}</a></h4>
-              <p class="nexus-meta">
-                <span class="nexus-chip nexus-chip--amorphous">FTLS</span>
-                {% if chapter_code != "" %}<span class="nexus-chip">Chapter {{ chapter_code }}</span>{% endif %}
-              </p>
+            <article class="sdm-hub-card">
+              <h5><a href="{{ p.url | relative_url }}">{% if chapter_code != "" %}[{{ chapter_code }}] {% endif %}{{ title }}</a></h5>
             </article>
           {% endunless %}
         {% endif %}
       {% endfor %}
-      </div>
-    </section>
-  </div>
+    </div>
+  </section>
+
+  <section class="sdm-hub-section" id="amorphous-dreams">
+    <h3>Amorphous Dreams</h3>
+
+    <h4>Flying Triremes and Laser Swords</h4>
+    <div class="sdm-hub-grid">
+      {% for p in pages %}
+        {% assign path = p.path | default: "" %}
+        {% if path contains "vault/Synthetic-Dream-Machine/Flying_Triremes_and_Laser_Swords/Flying_Triremes_and_Laser_Swords_" %}
+          {% assign title = p.title | default: p.name | replace: ".md", "" | replace: "_", " " %}
+          {% assign chapter_code = "" %}
+          {% assign filename = p.name | default: "" %}
+          {% if filename contains "_01_" %}{% assign chapter_code = "01" %}{% endif %}
+          {% if filename contains "_02_" %}{% assign chapter_code = "02" %}{% endif %}
+          {% if filename contains "_03_" %}{% assign chapter_code = "03" %}{% endif %}
+          {% if filename contains "_04_" %}{% assign chapter_code = "04" %}{% endif %}
+          {% if filename contains "_05_" %}{% assign chapter_code = "05" %}{% endif %}
+          {% if filename contains "_06_" %}{% assign chapter_code = "06" %}{% endif %}
+          {% if filename contains "_07_" %}{% assign chapter_code = "07" %}{% endif %}
+          {% if filename contains "_08_" %}{% assign chapter_code = "08" %}{% endif %}
+          {% if filename contains "_09_" %}{% assign chapter_code = "09" %}{% endif %}
+          {% if filename contains "_10_" %}{% assign chapter_code = "10" %}{% endif %}
+          <article class="sdm-hub-card sdm-hub-card--dev">
+            <h5><a href="{{ p.url | relative_url }}">{% if chapter_code != "" %}[{{ chapter_code }}] {% endif %}{{ title }}</a></h5>
+          </article>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <h4>Elyncia Chapters</h4>
+    <div class="sdm-hub-grid">
+      {% for p in pages %}
+        {% assign path = p.path | default: "" %}
+        {% if path contains "vault/Synthetic-Dream-Machine/Elyncia/Elyncia_" %}
+          {% assign title = p.title | default: p.name | replace: ".md", "" | replace: "_", " " %}
+          {% assign chapter_code = "" %}
+          {% assign filename = p.name | default: "" %}
+          {% if filename contains "_01_" %}{% assign chapter_code = "01" %}{% endif %}
+          {% if filename contains "_02_" %}{% assign chapter_code = "02" %}{% endif %}
+          {% if filename contains "_03_" %}{% assign chapter_code = "03" %}{% endif %}
+          {% if filename contains "_04_" %}{% assign chapter_code = "04" %}{% endif %}
+          {% if filename contains "_05_" %}{% assign chapter_code = "05" %}{% endif %}
+          {% if filename contains "_06_" %}{% assign chapter_code = "06" %}{% endif %}
+          {% if filename contains "_07_" %}{% assign chapter_code = "07" %}{% endif %}
+          {% if filename contains "_08_" %}{% assign chapter_code = "08" %}{% endif %}
+          {% if filename contains "_09_" %}{% assign chapter_code = "09" %}{% endif %}
+          {% if filename contains "_10_" %}{% assign chapter_code = "10" %}{% endif %}
+          <article class="sdm-hub-card sdm-hub-card--dev">
+            <h5><a href="{{ p.url | relative_url }}">{% if chapter_code != "" %}[{{ chapter_code }}] {% endif %}{{ title }}</a></h5>
+          </article>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <h4>Additional Elyncia files</h4>
+    <div class="sdm-hub-grid">
+      {% for p in pages %}
+        {% assign path = p.path | default: "" %}
+        {% if path contains "vault/Synthetic-Dream-Machine/Elyncia/" %}
+          {% unless path contains "vault/Synthetic-Dream-Machine/Elyncia/Elyncia_" %}
+            {% assign title = p.title | default: p.name | replace: ".md", "" | replace: "_", " " %}
+            <article class="sdm-hub-card sdm-hub-card--dev-alt">
+              <h5><a href="{{ p.url | relative_url }}">{{ title }}</a></h5>
+            </article>
+          {% endunless %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="sdm-hub-section" id="wizard-thief-fighter">
+    <h3>Wizard Thief Fighter</h3>
+    <h4>Core Synthetic Dream Machine</h4>
+
+    <div class="sdm-hub-grid sdm-hub-grid--priority">
+      <article class="sdm-hub-card sdm-hub-card--priority"><h5><a href="{{ '/vault/Synthetic-Dream-Machine/Our_Golden_Age/Our_Golden_Age/' | relative_url }}">Our Golden Age</a></h5></article>
+      <article class="sdm-hub-card sdm-hub-card--priority"><h5><a href="{{ '/vault/Synthetic-Dream-Machine/Vastlands_Guidebook/Vastlands_Guidebook/' | relative_url }}">Vastlands Guidebook</a></h5></article>
+      <article class="sdm-hub-card sdm-hub-card--priority"><h5><a href="{{ '/vault/Synthetic-Dream-Machine/Ultraviolet_Grasslands_and_the_Black_City_2e/Ultraviolet_Grasslands_and_the_Black_City_2e/' | relative_url }}">Ultraviolet Grasslands and the Black City 2e</a></h5></article>
+    </div>
+
+    <h4>SDM Supplemental Materials</h4>
+    <div class="sdm-hub-grid">
+      <article class="sdm-hub-card"><h5><a href="{{ '/vault/Synthetic-Dream-Machine/Eternal_Return_Key/Eternal_Return_Key/' | relative_url }}">Eternal Return Key</a></h5></article>
+      <article class="sdm-hub-card"><h5><a href="{{ '/vault/Synthetic-Dream-Machine/Magitecnica/Magitecnica_01_Codex_1_The_Use_and_Misuse_of_Powers_Great_and_Small/' | relative_url }}">[01] Magitecnica 01 Codex 1</a></h5></article>
+      <article class="sdm-hub-card"><h5><a href="{{ '/vault/Synthetic-Dream-Machine/Magitecnica/Magitecnica_02_Codex_2_The_Flesh_Source_Protocols/' | relative_url }}">[02] Magitecnica 02 Codex 2</a></h5></article>
+      <article class="sdm-hub-card"><h5><a href="{{ '/vault/Synthetic-Dream-Machine/There_A_Red_Door/There_A_Red_Door/' | relative_url }}">There A Red Door</a></h5></article>
+    </div>
+  </section>
 </section>

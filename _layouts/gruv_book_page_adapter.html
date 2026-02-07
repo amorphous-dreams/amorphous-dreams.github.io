@@ -4,15 +4,6 @@ layout: gruv_base_adapter
 
 <div class="page-wrap">
   <section class="card page-card">
-    {% if page.return_href or page.return_label %}
-      {% assign back_href_raw = page.return_href | default: '/vault/' %}
-      {% if back_href_raw contains '://' %}
-        {% assign back_href = back_href_raw %}
-      {% else %}
-        {% assign back_href = back_href_raw | relative_url %}
-      {% endif %}
-      <a class="js-back-link" href="{{ back_href }}">{{ page.return_label | default: "Return to Vault" }}</a>
-    {% endif %}
     <article class="markdown-body">
       {{ content }}
     </article>
