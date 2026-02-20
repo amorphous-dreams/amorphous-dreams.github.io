@@ -8,8 +8,8 @@
   {% assign vault_parent_label = nil %}
   {% if request_url contains '/vault/' %}
     {% if request_url == '/vault/' or request_url == '/vault' %}
-      {% assign vault_parent_href = '/' %}
-      {% assign vault_parent_label = 'DreamNet Home' %}
+      {% assign vault_parent_href = nil %}
+      {% assign vault_parent_label = nil %}
     {% elsif request_url contains '/vault/synthetic-dream-machine/' or request_url contains '/vault/Synthetic-Dream-Machine/' %}
       {% assign vault_parent_href = '/vault/synthetic-dream-machine/' %}
       {% assign vault_parent_label = 'SDM Nexus' %}

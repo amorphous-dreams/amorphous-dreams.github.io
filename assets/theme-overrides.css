@@ -21,7 +21,7 @@
   --page-gradient: radial-gradient(circle at 15% -5%, rgba(254, 128, 25, 0.12), transparent 45%), radial-gradient(circle at 85% 15%, rgba(184, 187, 38, 0.1), transparent 55%), linear-gradient(170deg, #1d1a18 0%, #14110e 65%, #0f0c09 100%);
 
   /* utility */
-  --max-width: 1080px;
+  --max-width: 1160px;
   --card-radius: 20px;
   --card-padding: clamp(18px, 2vw, 28px);
   --card-glow: rgba(131, 165, 152, 0.18);
@@ -181,7 +181,7 @@ header {
   color: rgba(235, 219, 178, 0.65);
 }
 .sigil { color: var(--flare); letter-spacing:0.2em; text-transform:uppercase; font-size:0.8rem; }
-h1 { font-size: clamp(2.2rem, 3.6vw, 3.4rem); margin: 0 0 12px; letter-spacing:0.04em; text-transform:uppercase; }
+h1 { font-size: clamp(2rem, 3vw, 3rem); margin: 0 0 12px; letter-spacing:0.04em; text-transform:uppercase; }
 .repo-link { margin: 0 0 16px; font-size: 1rem; font-weight:600; text-transform:uppercase; }
 .repo-link a { color: var(--glow); text-decoration: none; }
 
@@ -391,6 +391,35 @@ body.dashboard .page-wrap {
 
   .nav-dashboard__grid {
     grid-template-columns: 1fr;
+  }
+
+  .page-card .markdown-body table,
+  body.book-chapter .page-card .markdown-body table {
+    display: block;
+    width: max-content;
+    min-width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    background-image: linear-gradient(to left, rgba(235, 219, 178, 0.18), rgba(235, 219, 178, 0) 30px);
+    background-size: 36px 100%;
+    background-position: right 0 top 0;
+    background-repeat: no-repeat;
+  }
+
+  .page-card .markdown-body table th,
+  .page-card .markdown-body table td,
+  body.book-chapter .page-card .markdown-body table th,
+  body.book-chapter .page-card .markdown-body table td {
+    white-space: nowrap;
+  }
+
+  .page-card .markdown-body table thead th,
+  body.book-chapter .page-card .markdown-body table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #282828;
   }
 }
 
@@ -684,6 +713,106 @@ body.archive .download-link:hover {
 }
 
 .library-link:hover {
+  color: var(--flare);
+}
+
+/* Gear table cards */
+.markdown-body .gear-table-card {
+  margin: clamp(12px, 1.8vw, 20px) 0;
+  padding: clamp(16px, 2vw, 26px);
+  background: linear-gradient(135deg, rgba(50, 46, 43, 0.95), rgba(20, 17, 15, 0.95));
+  border: 1px solid rgba(235, 219, 178, 0.16);
+  border-radius: calc(var(--card-radius) + 2px);
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.markdown-body .gear-table-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 14% 14%, rgba(254, 128, 25, 0.2), transparent 48%),
+    radial-gradient(circle at 86% 18%, rgba(131, 165, 152, 0.16), transparent 52%),
+    linear-gradient(100deg, rgba(184, 187, 38, 0.08), transparent 70%);
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.markdown-body .gear-table-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+body.book-chapter .markdown-body .gear-table-card h3,
+body.book-chapter .markdown-body .gear-table-card h4,
+.markdown-body .gear-table-card h3,
+.markdown-body .gear-table-card h4 {
+  margin: 0 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(131, 165, 152, 0.35);
+  box-shadow: inset 0 -1px 0 rgba(254, 128, 25, 0.25);
+  color: var(--flare);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+body.book-chapter .markdown-body .gear-table-card blockquote,
+.markdown-body .gear-table-card blockquote {
+  margin: 10px 0 12px;
+  padding: 12px 14px;
+  background: rgba(26, 23, 20, 0.7);
+  border-left: 2px solid rgba(254, 128, 25, 0.5);
+  border-radius: 12px;
+  color: var(--ink);
+}
+
+body.book-chapter .markdown-body .gear-table-card blockquote blockquote,
+.markdown-body .gear-table-card blockquote blockquote {
+  margin: 10px 0;
+  background: rgba(26, 23, 20, 0.45);
+  border-left-color: rgba(184, 187, 38, 0.45);
+}
+
+body.book-chapter .markdown-body .gear-table-card p:has(+ blockquote),
+.markdown-body .gear-table-card p:has(+ blockquote) {
+  margin: 14px 0 4px;
+  color: var(--dust);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+body.book-chapter .markdown-body .gear-table-card p + blockquote,
+.markdown-body .gear-table-card p + blockquote {
+  padding: 8px 12px;
+  background: rgba(22, 19, 16, 0.6);
+  border-left-color: rgba(131, 165, 152, 0.6);
+}
+
+.markdown-body .gear-table-card table {
+  width: 100%;
+}
+
+.markdown-body .gear-table-card .gear-return {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.markdown-body .gear-table-card .gear-return a {
+  color: var(--glow);
+  text-decoration: none;
+}
+
+.markdown-body .gear-table-card .gear-return a:hover,
+.markdown-body .gear-table-card .gear-return a:focus-visible {
   color: var(--flare);
 }
 
