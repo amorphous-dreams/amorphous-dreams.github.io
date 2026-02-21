@@ -2,7 +2,11 @@
 layout: gruv_base_adapter
 ---
 
-<div class="page-wrap">
+{% include vault_nav_context.html %}
+<div class="page-wrap{% if vault_ctx_show_operator_nav %} page-wrap--with-operator-nav{% endif %}">
+  {% if vault_ctx_show_operator_nav %}
+    {% include vault-operator-nav.html %}
+  {% endif %}
   <section class="card page-card">
     <article class="markdown-body">
       {{ content }}

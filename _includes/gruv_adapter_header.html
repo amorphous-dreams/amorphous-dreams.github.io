@@ -3,28 +3,11 @@
   <h1>{{ site.title | default: "Amorphous Dreams Cabal" }}</h1>
   <p class="lead">{{ page.subtitle | default: site.lead | default: "A navigational console for the Dreamnet constellation." }}</p>
 
-  {% assign request_url = page.url | default: '/' %}
-  {% assign vault_parent_href = nil %}
-  {% assign vault_parent_label = nil %}
-  {% if request_url contains '/vault/' %}
-    {% if request_url == '/vault/' or request_url == '/vault' %}
-      {% assign vault_parent_href = nil %}
-      {% assign vault_parent_label = nil %}
-    {% elsif request_url contains '/vault/synthetic-dream-machine/' or request_url contains '/vault/Synthetic-Dream-Machine/' %}
-      {% assign vault_parent_href = '/vault/synthetic-dream-machine/' %}
-      {% assign vault_parent_label = 'SDM Nexus' %}
-    {% else %}
-      {% assign request_parts = request_url | split: '/' %}
-      {% assign vault_section = request_parts[2] %}
-      {% if vault_section and vault_section != '' %}
-        {% assign vault_parent_href = '/vault/' | append: vault_section | append: '/' %}
-        {% assign vault_parent_label = vault_section | replace: '-', ' ' | replace: '_', ' ' | capitalize %}
-      {% else %}
-        {% assign vault_parent_href = '/vault/' %}
-        {% assign vault_parent_label = 'Vault' %}
-      {% endif %}
-    {% endif %}
-  {% endif %}
+  {% include vault_nav_context.html %}
+
+  {% assign request_url = vault_ctx_request_url | default: page.url | default: '/' %}
+  {% assign vault_parent_href = vault_ctx_parent_href | default: nil %}
+  {% assign vault_parent_label = vault_ctx_parent_label | default: nil %}
 
   <nav class="header-nav header-nav--global" aria-label="Global navigation">
     <a class="header-link header-home-link"

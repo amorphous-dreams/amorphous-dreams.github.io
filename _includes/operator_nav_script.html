@@ -1,0 +1,62 @@
+<script>
+(function () {
+  function initOperatorNav() {
+    var openButtons = document.querySelectorAll('.js-operator-nav-open');
+    if (!openButtons || !openButtons.length) return;
+
+    openButtons.forEach(function (openButton) {
+      if (openButton.__operator_nav_attached) return;
+      openButton.__operator_nav_attached = true;
+
+      var panelId = openButton.getAttribute('aria-controls');
+      if (!panelId) return;
+      var dialog = document.getElementById(panelId);
+      if (!dialog || typeof dialog.showModal !== 'function') return;
+
+      var closeButton = dialog.querySelector('.js-operator-nav-close');
+
+      function closeDialog() {
+        if (dialog.open) {
+          dialog.close();
+        }
+      }
+
+      openButton.addEventListener('click', function () {
+        if (!dialog.open) {
+          dialog.showModal();
+          openButton.setAttribute('aria-expanded', 'true');
+        }
+      });
+
+      if (closeButton) {
+        closeButton.addEventListener('click', function () {
+          closeDialog();
+        });
+      }
+
+      dialog.addEventListener('close', function () {
+        openButton.setAttribute('aria-expanded', 'false');
+        openButton.focus();
+      });
+
+      dialog.addEventListener('click', function (event) {
+        var rect = dialog.getBoundingClientRect();
+        var inside =
+          event.clientX >= rect.left &&
+          event.clientX <= rect.right &&
+          event.clientY >= rect.top &&
+          event.clientY <= rect.bottom;
+        if (!inside) {
+          closeDialog();
+        }
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initOperatorNav);
+  } else {
+    initOperatorNav();
+  }
+})();
+</script>

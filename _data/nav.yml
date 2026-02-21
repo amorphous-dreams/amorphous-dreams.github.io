@@ -5,3 +5,21 @@ vault_nodes:
   - label: "More Vaults Soon"
     href: "/vault/"
     summary: "Placeholder route for additional modular vaults."
+
+vault_nexus:
+  synthetic_dream_machine:
+    key: "synthetic_dream_machine"
+    label: "SDM Nexus"
+    href: "/vault/synthetic-dream-machine/"
+    aliases:
+      - "/vault/Synthetic-Dream-Machine/"
+    books:
+      - key: "quickstart"
+        label: "Quickstart"
+        href: "/vault/Synthetic-Dream-Machine/Synthetic_Dream_Machine_01_Quickstart/"
+      - key: "paths_index"
+        label: "Paths Index"
+        href: "/vault/Synthetic-Dream-Machine/Synthetic_Dream_Machine_02_Paths_Index/"
+      - key: "traits_index"
+        label: "Traits Index"
+        href: "/vault/Synthetic-Dream-Machine/Synthetic_Dream_Machine_03_Traits_Index/"

@@ -1,0 +1,14 @@
+{% assign cli_url = page.url | default: '/' %}
+{% unless cli_url == '/' %}
+  {% assign cli_last = cli_url | slice: -1, 1 %}
+  {% unless cli_last == '/' %}
+    {% assign cli_url = cli_url | append: '/' %}
+  {% endunless %}
+{% endunless %}
+
+<div class="dreamnet-cli-pathbar" role="status" aria-label="Current document path">
+  <div class="dreamnet-cli-pathbar__inner">
+    <span class="dreamnet-cli-pathbar__prompt" aria-hidden="true">$</span>
+    <span class="dreamnet-cli-pathbar__text">dreamnet:/{{ cli_url | remove_first: '/' }}</span>
+  </div>
+</div>
