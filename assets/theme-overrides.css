@@ -42,7 +42,7 @@ body {
   background-size: cover;
   background-repeat: no-repeat;
   color: var(--ink);
-  padding-bottom: 52px;
+  padding: 0 0 52px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -79,7 +79,7 @@ header {
 .dreamnet-cli-pathbar {
   position: sticky;
   top: 0;
-  z-index: 22;
+  z-index: 40;
   width: 100vw;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
@@ -92,7 +92,7 @@ header {
   width: 100%;
   max-width: 62rem;
   margin: 0 auto;
-  padding: 7px var(--header-inline-pad);
+  padding: 9px var(--header-inline-pad);
   white-space: normal;
   overflow-wrap: anywhere;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -538,7 +538,136 @@ h1 { font-size: clamp(2rem, 3vw, 3rem); margin: 0 0 12px; letter-spacing:0.04em;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(18px);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
+}
+
+.page-card .markdown-body .table-scroll,
+body.book-chapter .page-card .markdown-body .table-scroll {
+  position: relative;
+  margin: 1rem 0;
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable both-edges;
+}
+
+.page-card .markdown-body .table-scroll:focus,
+body.book-chapter .page-card .markdown-body .table-scroll:focus,
+.page-card .markdown-body .table-scroll:focus-visible,
+body.book-chapter .page-card .markdown-body .table-scroll:focus-visible {
+  outline: 2px solid rgba(184, 187, 38, 0.9);
+  outline-offset: 2px;
+}
+
+.page-card .markdown-body .table-scroll::before,
+.page-card .markdown-body .table-scroll::after,
+body.book-chapter .page-card .markdown-body .table-scroll::before,
+body.book-chapter .page-card .markdown-body .table-scroll::after {
+  content: "";
+  position: sticky;
+  top: 0;
+  bottom: 0;
+  width: 18px;
+  pointer-events: none;
+  z-index: 32;
+  opacity: 0;
+  transition: opacity 140ms ease;
+}
+
+.page-card .markdown-body .table-scroll::before,
+body.book-chapter .page-card .markdown-body .table-scroll::before {
+  left: 0;
+  float: left;
+  background: linear-gradient(90deg, rgba(16, 15, 15, 0.55), rgba(16, 15, 15, 0));
+}
+
+.page-card .markdown-body .table-scroll::after,
+body.book-chapter .page-card .markdown-body .table-scroll::after {
+  right: 0;
+  float: right;
+  background: linear-gradient(270deg, rgba(16, 15, 15, 0.55), rgba(16, 15, 15, 0));
+}
+
+.page-card .markdown-body .table-scroll[data-scroll-state="start"]::after,
+.page-card .markdown-body .table-scroll[data-scroll-state="middle"]::after,
+body.book-chapter .page-card .markdown-body .table-scroll[data-scroll-state="start"]::after,
+body.book-chapter .page-card .markdown-body .table-scroll[data-scroll-state="middle"]::after {
+  opacity: 1;
+}
+
+.page-card .markdown-body .table-scroll[data-scroll-state="end"]::before,
+.page-card .markdown-body .table-scroll[data-scroll-state="middle"]::before,
+body.book-chapter .page-card .markdown-body .table-scroll[data-scroll-state="end"]::before,
+body.book-chapter .page-card .markdown-body .table-scroll[data-scroll-state="middle"]::before {
+  opacity: 1;
+}
+
+.page-card .markdown-body table,
+body.book-chapter .page-card .markdown-body table {
+  display: table;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  table-layout: auto;
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.page-card .markdown-body table thead th,
+body.book-chapter .page-card .markdown-body table thead th {
+  background: linear-gradient(180deg, rgba(52, 46, 40, 0.98), rgba(36, 31, 27, 0.98));
+  background-clip: padding-box;
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(184, 187, 38, 0.55);
+  box-shadow: inset 0 -1px 0 rgba(254, 128, 25, 0.35), 0 2px 0 rgba(0, 0, 0, 0.28);
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: manual;
+}
+
+.page-card .markdown-body table th,
+.page-card .markdown-body table td,
+body.book-chapter .page-card .markdown-body table th,
+body.book-chapter .page-card .markdown-body table td {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  hyphens: auto;
+  vertical-align: top;
+}
+
+.page-card .markdown-body table td ul,
+.page-card .markdown-body table td ol,
+body.book-chapter .page-card .markdown-body table td ul,
+body.book-chapter .page-card .markdown-body table td ol {
+  margin: 0.35em 0 0.35em 1.15em;
+  padding: 0;
+}
+
+.page-card .markdown-body table td li,
+body.book-chapter .page-card .markdown-body table td li {
+  margin: 0.15em 0;
+}
+
+.page-card .markdown-body .table-scroll::-webkit-scrollbar,
+body.book-chapter .page-card .markdown-body .table-scroll::-webkit-scrollbar {
+  height: 10px;
+}
+
+.page-card .markdown-body .table-scroll::-webkit-scrollbar-thumb,
+body.book-chapter .page-card .markdown-body .table-scroll::-webkit-scrollbar-thumb {
+  background: rgba(184, 187, 38, 0.45);
+  border-radius: 999px;
+}
+
+.page-card .markdown-body .table-scroll::-webkit-scrollbar-track,
+body.book-chapter .page-card .markdown-body .table-scroll::-webkit-scrollbar-track {
+  background: rgba(235, 219, 178, 0.08);
 }
 
 .page-card .markdown-body::after {
@@ -715,31 +844,10 @@ body.dashboard .page-wrap {
 
   .page-card .markdown-body table,
   body.book-chapter .page-card .markdown-body table {
-    display: block;
-    width: max-content;
-    min-width: 100%;
-    max-width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
     background-image: linear-gradient(to left, rgba(235, 219, 178, 0.18), rgba(235, 219, 178, 0) 30px);
     background-size: 36px 100%;
     background-position: right 0 top 0;
     background-repeat: no-repeat;
-  }
-
-  .page-card .markdown-body table th,
-  .page-card .markdown-body table td,
-  body.book-chapter .page-card .markdown-body table th,
-  body.book-chapter .page-card .markdown-body table td {
-    white-space: nowrap;
-  }
-
-  .page-card .markdown-body table thead th,
-  body.book-chapter .page-card .markdown-body table thead th {
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    background: #282828;
   }
 }
 
@@ -795,7 +903,7 @@ body.book-chapter .page-card .markdown-body {
   box-shadow: 0 40px 110px rgba(0, 0, 0, 0.55), 0 0 35px rgba(254, 128, 25, 0.18);
   backdrop-filter: blur(22px);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 body.book-chapter .page-card .markdown-body::after {
@@ -1045,7 +1153,7 @@ body.archive .download-link:hover {
   border-radius: calc(var(--card-radius) + 2px);
   box-shadow: 0 20px 55px rgba(0, 0, 0, 0.5);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .markdown-body .gear-table-card::before {
@@ -1139,7 +1247,9 @@ body.book-chapter .markdown-body .gear-table-card p + blockquote,
 /* Trait/power component overrides */
 /* trait + power cards */
 .markdown-body .trait-card,
-.markdown-body .power-card {
+.markdown-body .power-card,
+.markdown-body .gear-table-card,
+.markdown-body .heritage-card {
   margin: clamp(10px, 1.4vw, 16px) 0;
   padding: clamp(14px, 1.6vw, 22px);
   background: linear-gradient(135deg, rgba(60, 56, 54, 0.92), rgba(29, 26, 24, 0.92));
@@ -1151,7 +1261,9 @@ body.book-chapter .markdown-body .gear-table-card p + blockquote,
 }
 
 .markdown-body .trait-card::before,
-.markdown-body .power-card::before {
+.markdown-body .power-card::before,
+.markdown-body .gear-table-card::before,
+.markdown-body .heritage-card::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -1164,7 +1276,9 @@ body.book-chapter .markdown-body .gear-table-card p + blockquote,
 }
 
 .markdown-body .trait-card > *,
-.markdown-body .power-card > * {
+.markdown-body .power-card > *,
+.markdown-body .gear-table-card > *,
+.markdown-body .heritage-card > * {
   position: relative;
   z-index: 1;
 }
@@ -1173,10 +1287,22 @@ body.book-chapter .markdown-body .trait-card h2,
 body.book-chapter .markdown-body .trait-card h4,
 body.book-chapter .markdown-body .power-card h2,
 body.book-chapter .markdown-body .power-card h4,
+body.book-chapter .markdown-body .gear-table-card h2,
+body.book-chapter .markdown-body .gear-table-card h3,
+body.book-chapter .markdown-body .gear-table-card h4,
+body.book-chapter .markdown-body .heritage-card h2,
+body.book-chapter .markdown-body .heritage-card h3,
+body.book-chapter .markdown-body .heritage-card h4,
 .markdown-body .trait-card h2,
 .markdown-body .trait-card h4,
 .markdown-body .power-card h2,
-.markdown-body .power-card h4 {
+.markdown-body .power-card h4,
+.markdown-body .gear-table-card h2,
+.markdown-body .gear-table-card h3,
+.markdown-body .gear-table-card h4,
+.markdown-body .heritage-card h2,
+.markdown-body .heritage-card h3,
+.markdown-body .heritage-card h4 {
   margin: 0 0 8px;
   padding-bottom: 6px;
   border-bottom: 1px solid rgba(131, 165, 152, 0.35);
@@ -1189,7 +1315,11 @@ body.book-chapter .markdown-body .power-card h4,
 body.book-chapter .markdown-body .trait-card blockquote,
 .markdown-body .trait-card blockquote,
 body.book-chapter .markdown-body .power-card blockquote,
-.markdown-body .power-card blockquote {
+.markdown-body .power-card blockquote,
+body.book-chapter .markdown-body .gear-table-card blockquote,
+.markdown-body .gear-table-card blockquote,
+body.book-chapter .markdown-body .heritage-card blockquote,
+.markdown-body .heritage-card blockquote {
   margin: 8px 0;
   padding: 8px 12px;
   background: rgba(29, 26, 24, 0.6);
@@ -1198,22 +1328,51 @@ body.book-chapter .markdown-body .power-card blockquote,
   color: var(--ink);
 }
 
+body.book-chapter .markdown-body .heritage-card ul,
+.markdown-body .heritage-card ul {
+  margin: 8px 0;
+  padding: 8px 12px 8px 1.6em;
+  background: rgba(29, 26, 24, 0.6);
+  border-left: 2px solid rgba(254, 128, 25, 0.45);
+  border-radius: 12px;
+  color: var(--ink);
+}
+
+body.book-chapter .markdown-body .heritage-card ul li,
+.markdown-body .heritage-card ul li {
+  margin: 0.25em 0;
+}
+
 body.book-chapter .markdown-body .trait-card > p:has(+ blockquote),
 body.book-chapter .markdown-body .power-card > p:has(+ blockquote),
+body.book-chapter .markdown-body .gear-table-card > p:has(+ blockquote),
+body.book-chapter .markdown-body .heritage-card > p:has(+ blockquote),
 .markdown-body .trait-card > p:has(+ blockquote),
-.markdown-body .power-card > p:has(+ blockquote) {
-  color: #d65d0e;
+.markdown-body .power-card > p:has(+ blockquote),
+.markdown-body .gear-table-card > p:has(+ blockquote),
+.markdown-body .heritage-card > p:has(+ blockquote) {
+  margin: 14px 0 4px;
+  color: var(--dust);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 body.book-chapter .markdown-body .trait-card blockquote p,
 .markdown-body .trait-card blockquote p,
 body.book-chapter .markdown-body .power-card blockquote p,
-.markdown-body .power-card blockquote p {
+.markdown-body .power-card blockquote p,
+body.book-chapter .markdown-body .gear-table-card blockquote p,
+.markdown-body .gear-table-card blockquote p,
+body.book-chapter .markdown-body .heritage-card blockquote p,
+.markdown-body .heritage-card blockquote p {
   margin-bottom: 0.5em;
 }
 
 .markdown-body .trait-card .trait-return,
-.markdown-body .power-card .power-return {
+.markdown-body .power-card .power-return,
+.markdown-body .gear-table-card .gear-return,
+.markdown-body .heritage-card .heritage-return {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -1224,7 +1383,9 @@ body.book-chapter .markdown-body .power-card blockquote p,
 }
 
 .markdown-body .trait-card .trait-return a,
-.markdown-body .power-card .power-return a {
+.markdown-body .power-card .power-return a,
+.markdown-body .gear-table-card .gear-return a,
+.markdown-body .heritage-card .heritage-return a {
   color: var(--glow);
   text-decoration: none;
 }
@@ -1232,7 +1393,11 @@ body.book-chapter .markdown-body .power-card blockquote p,
 .markdown-body .trait-card .trait-return a:hover,
 .markdown-body .trait-card .trait-return a:focus-visible,
 .markdown-body .power-card .power-return a:hover,
-.markdown-body .power-card .power-return a:focus-visible {
+.markdown-body .power-card .power-return a:focus-visible,
+.markdown-body .gear-table-card .gear-return a:hover,
+.markdown-body .gear-table-card .gear-return a:focus-visible,
+.markdown-body .heritage-card .heritage-return a:hover,
+.markdown-body .heritage-card .heritage-return a:focus-visible {
   color: var(--flare);
 }
 

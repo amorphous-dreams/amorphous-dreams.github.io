@@ -10,8 +10,15 @@
   {% endif %}
 
   {% assign operator_group_keys_compact = '' %}
+  {% assign operator_entries_compact = '' %}
+  {% assign operator_group_labels_compact = '' %}
+  {% assign operator_discovered_order_compact = '' %}
   {% assign operator_current_group_key = nil %}
   {% assign operator_nexus_paths = vault_ctx_nexus_paths_compact | split: '|' %}
+  {% assign operator_grouping_config = nil %}
+  {% if vault_ctx_nexus_data and vault_ctx_nexus_data.operator_nav %}
+    {% assign operator_grouping_config = vault_ctx_nexus_data.operator_nav %}
+  {% endif %}
 
   {% for operator_page in operator_pages %}
     {% assign operator_page_url = operator_page.url | default: '' %}
@@ -51,22 +58,23 @@
     {% endif %}
 
     {% assign operator_group_key = 'other' %}
-    {% if vault_ctx_nexus_key == 'synthetic_dream_machine' %}
-      {% if operator_page_path contains 'vault/Synthetic-Dream-Machine/Synthetic_Dream_Machine_' %}
-        {% assign operator_group_key = 'sdm_core' %}
-      {% elsif operator_page_path contains 'vault/Synthetic-Dream-Machine/Flying_Triremes_and_Laser_Swords/' %}
-        {% assign operator_group_key = 'ad_ftls' %}
-      {% elsif operator_page_path contains 'vault/Synthetic-Dream-Machine/Elyncia/Elyncia_' %}
-        {% assign operator_group_key = 'ad_elyncia_chapters' %}
-      {% elsif operator_page_path contains 'vault/Synthetic-Dream-Machine/Elyncia/' %}
-        {% assign operator_group_key = 'ad_elyncia_additional' %}
-      {% elsif operator_page_path contains 'vault/Synthetic-Dream-Machine/Our_Golden_Age/' or operator_page_path contains 'vault/Synthetic-Dream-Machine/Vastlands_Guidebook/' or operator_page_path contains 'vault/Synthetic-Dream-Machine/Ultraviolet_Grasslands_and_the_Black_City_2e/' %}
-        {% assign operator_group_key = 'wtf_core' %}
-      {% elsif operator_page_path contains 'vault/Synthetic-Dream-Machine/Eternal_Return_Key/' or operator_page_path contains 'vault/Synthetic-Dream-Machine/Magitecnica/' or operator_page_path contains 'vault/Synthetic-Dream-Machine/There_A_Red_Door/' %}
-        {% assign operator_group_key = 'wtf_supplemental' %}
-      {% elsif operator_page_path contains 'vault/Synthetic-Dream-Machine/Synthetic-Dream-Machine-3rd-Party-License.md' %}
-        {% assign operator_group_key = 'wtf_supplemental' %}
-      {% endif %}
+    {% if operator_grouping_config and operator_grouping_config.group_order and operator_grouping_config.groups %}
+      {% assign operator_match_found = false %}
+      {% for configured_group_key in operator_grouping_config.group_order %}
+        {% assign configured_group = operator_grouping_config.groups[configured_group_key] %}
+        {% if configured_group and configured_group.match_paths %}
+          {% for match_path in configured_group.match_paths %}
+            {% if operator_page_path contains match_path %}
+              {% assign operator_group_key = configured_group_key %}
+              {% assign operator_match_found = true %}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        {% if operator_match_found %}
+          {% break %}
+        {% endif %}
+      {% endfor %}
     {% else %}
       {% assign operator_relative_url = operator_page_url | remove_first: operator_matched_prefix %}
       {% assign operator_relative_url = operator_relative_url | remove_first: '/' %}
@@ -80,15 +88,41 @@
     {% assign operator_group_token = '|' | append: operator_group_key | append: '|' %}
     {% unless operator_group_keys_compact contains operator_group_token %}
       {% assign operator_group_keys_compact = operator_group_keys_compact | append: operator_group_token %}
+      {% assign operator_discovered_order_compact = operator_discovered_order_compact | append: operator_group_key | append: '|' %}
+
+      {% assign operator_group_label = operator_group_key | replace: '-', ' ' | replace: '_', ' ' | capitalize %}
+      {% if operator_grouping_config and operator_grouping_config.groups and operator_grouping_config.groups[operator_group_key] and operator_grouping_config.groups[operator_group_key].label %}
+        {% assign operator_group_label = operator_grouping_config.groups[operator_group_key].label %}
+      {% endif %}
+      {% assign operator_group_label = operator_group_label | replace: '@@', ' ' | replace: '||GROUP||', ' ' %}
+      {% capture operator_group_label_line %}{{ operator_group_key }}@@{{ operator_group_label }}{% endcapture %}
+      {% assign operator_group_labels_compact = operator_group_labels_compact | append: '||GROUP||' | append: operator_group_label_line %}
     {% endunless %}
 
+    {% assign operator_page_is_current = false %}
     {% if operator_page_url == vault_ctx_request_url %}
+      {% assign operator_page_is_current = true %}
       {% assign operator_current_group_key = operator_group_key %}
     {% endif %}
+
+    {% assign operator_page_label = operator_page.title | default: nil %}
+    {% if operator_page_label == nil or operator_page_label == '' %}
+      {% assign operator_relative_url = operator_page_url | remove_first: operator_matched_prefix %}
+      {% assign operator_relative_url = operator_relative_url | remove_first: '/' %}
+      {% assign operator_path_parts = operator_relative_url | split: '/' %}
+      {% assign operator_leaf = operator_path_parts | last %}
+      {% assign operator_page_label = operator_leaf | replace: '-', ' ' | replace: '_', ' ' | capitalize %}
+    {% endif %}
+    {% assign operator_page_label = operator_page_label | replace: '@@', ' ' | replace: '||ENTRY||', ' ' %}
+
+    {% capture operator_entry_line %}{{ operator_page_url }}@@{{ operator_page_label }}@@{{ operator_group_key }}@@{{ operator_page_is_current }}{% endcapture %}
+    {% assign operator_entries_compact = operator_entries_compact | append: '||ENTRY||' | append: operator_entry_line %}
   {% endfor %}
 
-  {% assign operator_group_keys = operator_group_keys_compact | split: '|' %}
-  {% assign operator_group_order = 'sdm_core|ad_ftls|ad_elyncia_chapters|ad_elyncia_additional|wtf_core|wtf_supplemental|other' | split: '|' %}
+  {% assign operator_group_order_compact = operator_discovered_order_compact %}
+  {% if operator_grouping_config and operator_grouping_config.group_order %}
+    {% assign operator_group_order_compact = operator_grouping_config.group_order | join: '|' %}
+  {% endif %}
 
   <aside class="operator-nav-shell" aria-label="Operator tools">
     <button class="operator-nav-toggle js-operator-nav-open"
@@ -110,124 +144,14 @@
           </a>
         </p>
       {% endif %}
-
-      {% for operator_group_key in operator_group_order %}
-        {% if operator_group_key == '' %}
-          {% continue %}
-        {% endif %}
-        {% assign operator_group_token = '|' | append: operator_group_key | append: '|' %}
-        {% unless operator_group_keys_compact contains operator_group_token %}
-          {% continue %}
-        {% endunless %}
-
-          {% assign operator_group_label = operator_group_key | replace: '-', ' ' | replace: '_', ' ' | capitalize %}
-          {% if operator_group_key == 'sdm_core' %}{% assign operator_group_label = 'Synthetic Dream Machine' %}{% endif %}
-          {% if operator_group_key == 'ad_ftls' %}{% assign operator_group_label = 'Amorphous Dreams · Flying Triremes and Laser Swords' %}{% endif %}
-          {% if operator_group_key == 'ad_elyncia_chapters' %}{% assign operator_group_label = 'Amorphous Dreams · Elyncia Chapters' %}{% endif %}
-          {% if operator_group_key == 'ad_elyncia_additional' %}{% assign operator_group_label = 'Amorphous Dreams · Additional Elyncia files' %}{% endif %}
-          {% if operator_group_key == 'wtf_core' %}{% assign operator_group_label = 'Wizard Thief Fighter · Core Synthetic Dream Machine' %}{% endif %}
-          {% if operator_group_key == 'wtf_supplemental' %}{% assign operator_group_label = 'Wizard Thief Fighter · SDM Supplemental Materials' %}{% endif %}
-
-        {% assign operator_group_is_open = false %}
-        {% if operator_group_key == operator_current_group_key %}
-          {% assign operator_group_is_open = true %}
-        {% endif %}
-
-        <details class="operator-nav-group{% if operator_group_is_open %} operator-nav-group--current{% endif %}" {% if operator_group_is_open %}open{% endif %}>
-          <summary class="operator-nav-group__summary">{{ operator_group_label }}</summary>
-          <ul class="operator-nav__list">
-            {% for operator_page in operator_pages %}
-              {% assign operator_page_url = operator_page.url | default: '' %}
-              {% assign operator_page_path = operator_page.path | default: '' %}
-              {% if operator_page_url == '' %}
-                {% continue %}
-              {% endif %}
-              {% assign operator_page_last_char = operator_page_url | slice: -1, 1 %}
-              {% unless operator_page_last_char == '/' %}
-                {% assign operator_page_url = operator_page_url | append: '/' %}
-              {% endunless %}
-
-              {% assign operator_matched_prefix = '' %}
-              {% for operator_prefix in operator_nexus_paths %}
-                {% if operator_prefix == '' %}
-                  {% continue %}
-                {% endif %}
-                {% assign operator_prefix_size = operator_prefix | size %}
-                {% assign operator_page_head = operator_page_url | slice: 0, operator_prefix_size %}
-                {% if operator_page_head == operator_prefix %}
-                  {% assign operator_matched_prefix = operator_prefix %}
-                  {% break %}
-                {% endif %}
-              {% endfor %}
-
-              {% if operator_matched_prefix == '' %}
-                {% continue %}
-              {% endif %}
-              {% if operator_page.published == false %}
-                {% continue %}
-              {% endif %}
-              {% if operator_page_url contains '/_agents/' or operator_page_url contains '/_todo/' %}
-                {% continue %}
-              {% endif %}
-              {% if vault_ctx_nexus_href and operator_page_url == vault_ctx_nexus_href %}
-                {% continue %}
-              {% endif %}
-
-              {% assign operator_page_group_key = 'other' %}
-              {% if vault_ctx_nexus_key == 'synthetic_dream_machine' %}
-                {% if operator_page_path contains 'vault/Synthetic-Dream-Machine/Synthetic_Dream_Machine_' %}
-                  {% assign operator_page_group_key = 'sdm_core' %}
-                {% elsif operator_page_path contains 'vault/Synthetic-Dream-Machine/Flying_Triremes_and_Laser_Swords/' %}
-                  {% assign operator_page_group_key = 'ad_ftls' %}
-                {% elsif operator_page_path contains 'vault/Synthetic-Dream-Machine/Elyncia/Elyncia_' %}
-                  {% assign operator_page_group_key = 'ad_elyncia_chapters' %}
-                {% elsif operator_page_path contains 'vault/Synthetic-Dream-Machine/Elyncia/' %}
-                  {% assign operator_page_group_key = 'ad_elyncia_additional' %}
-                {% elsif operator_page_path contains 'vault/Synthetic-Dream-Machine/Our_Golden_Age/' or operator_page_path contains 'vault/Synthetic-Dream-Machine/Vastlands_Guidebook/' or operator_page_path contains 'vault/Synthetic-Dream-Machine/Ultraviolet_Grasslands_and_the_Black_City_2e/' %}
-                  {% assign operator_page_group_key = 'wtf_core' %}
-                {% elsif operator_page_path contains 'vault/Synthetic-Dream-Machine/Eternal_Return_Key/' or operator_page_path contains 'vault/Synthetic-Dream-Machine/Magitecnica/' or operator_page_path contains 'vault/Synthetic-Dream-Machine/There_A_Red_Door/' %}
-                  {% assign operator_page_group_key = 'wtf_supplemental' %}
-                {% elsif operator_page_path contains 'vault/Synthetic-Dream-Machine/Synthetic-Dream-Machine-3rd-Party-License.md' %}
-                  {% assign operator_page_group_key = 'wtf_supplemental' %}
-                {% endif %}
-              {% else %}
-                {% assign operator_relative_url = operator_page_url | remove_first: operator_matched_prefix %}
-                {% assign operator_relative_url = operator_relative_url | remove_first: '/' %}
-                {% assign operator_path_parts = operator_relative_url | split: '/' %}
-                {% assign operator_first_part = operator_path_parts[0] | default: '' %}
-                {% if operator_first_part != '' %}
-                  {% assign operator_page_group_key = operator_first_part %}
-                {% endif %}
-              {% endif %}
-              {% unless operator_page_group_key == operator_group_key %}
-                {% continue %}
-              {% endunless %}
-
-              {% assign operator_page_is_current = false %}
-              {% if operator_page_url == vault_ctx_request_url %}
-                {% assign operator_page_is_current = true %}
-              {% endif %}
-
-              {% assign operator_page_label = operator_page.title | default: nil %}
-              {% if operator_page_label == nil or operator_page_label == '' %}
-                {% assign operator_relative_url = operator_page_url | remove_first: operator_matched_prefix %}
-                {% assign operator_relative_url = operator_relative_url | remove_first: '/' %}
-                {% assign operator_path_parts = operator_relative_url | split: '/' %}
-                {% assign operator_leaf = operator_path_parts | last %}
-                {% assign operator_page_label = operator_leaf | replace: '-', ' ' | replace: '_', ' ' | capitalize %}
-              {% endif %}
-
-              <li class="operator-nav__item">
-                <a class="operator-nav__link"
-                   href="{{ operator_page_url | relative_url }}"
-                   {% if operator_page_is_current %}aria-current="page"{% endif %}>
-                  {{ operator_page_label }}
-                </a>
-              </li>
-            {% endfor %}
-          </ul>
-        </details>
-      {% endfor %}
+      {% include vault-operator-nav-groups.html
+        mode='desktop'
+        group_order_compact=operator_group_order_compact
+        group_keys_compact=operator_group_keys_compact
+        group_labels_compact=operator_group_labels_compact
+        entries_compact=operator_entries_compact
+        current_group_key=operator_current_group_key
+      %}
     </nav>
 
     <dialog class="operator-nav-dialog" id="{{ operator_nav_panel_id }}" aria-label="Operator navigation panel">
@@ -246,124 +170,14 @@
             </a>
           </p>
         {% endif %}
-
-        {% for operator_group_key in operator_group_order %}
-          {% if operator_group_key == '' %}
-            {% continue %}
-          {% endif %}
-          {% assign operator_group_token = '|' | append: operator_group_key | append: '|' %}
-          {% unless operator_group_keys_compact contains operator_group_token %}
-            {% continue %}
-          {% endunless %}
-
-          {% assign operator_group_label = operator_group_key | replace: '-', ' ' | replace: '_', ' ' | capitalize %}
-          {% if operator_group_key == 'sdm_core' %}{% assign operator_group_label = 'Synthetic Dream Machine' %}{% endif %}
-          {% if operator_group_key == 'ad_ftls' %}{% assign operator_group_label = 'Amorphous Dreams · Flying Triremes and Laser Swords' %}{% endif %}
-          {% if operator_group_key == 'ad_elyncia_chapters' %}{% assign operator_group_label = 'Amorphous Dreams · Elyncia Chapters' %}{% endif %}
-          {% if operator_group_key == 'ad_elyncia_additional' %}{% assign operator_group_label = 'Amorphous Dreams · Additional Elyncia files' %}{% endif %}
-          {% if operator_group_key == 'wtf_core' %}{% assign operator_group_label = 'Wizard Thief Fighter · Core Synthetic Dream Machine' %}{% endif %}
-          {% if operator_group_key == 'wtf_supplemental' %}{% assign operator_group_label = 'Wizard Thief Fighter · SDM Supplemental Materials' %}{% endif %}
-
-          {% assign operator_group_is_open = false %}
-          {% if operator_group_key == operator_current_group_key %}
-            {% assign operator_group_is_open = true %}
-          {% endif %}
-
-          <details class="operator-nav-group operator-nav-group--mobile{% if operator_group_is_open %} operator-nav-group--current{% endif %}" {% if operator_group_is_open %}open{% endif %}>
-            <summary class="operator-nav-group__summary">{{ operator_group_label }}</summary>
-            <ul class="operator-nav__list">
-              {% for operator_page in operator_pages %}
-                {% assign operator_page_url = operator_page.url | default: '' %}
-                {% assign operator_page_path = operator_page.path | default: '' %}
-                {% if operator_page_url == '' %}
-                  {% continue %}
-                {% endif %}
-                {% assign operator_page_last_char = operator_page_url | slice: -1, 1 %}
-                {% unless operator_page_last_char == '/' %}
-                  {% assign operator_page_url = operator_page_url | append: '/' %}
-                {% endunless %}
-
-                {% assign operator_matched_prefix = '' %}
-                {% for operator_prefix in operator_nexus_paths %}
-                  {% if operator_prefix == '' %}
-                    {% continue %}
-                  {% endif %}
-                  {% assign operator_prefix_size = operator_prefix | size %}
-                  {% assign operator_page_head = operator_page_url | slice: 0, operator_prefix_size %}
-                  {% if operator_page_head == operator_prefix %}
-                    {% assign operator_matched_prefix = operator_prefix %}
-                    {% break %}
-                  {% endif %}
-                {% endfor %}
-
-                {% if operator_matched_prefix == '' %}
-                  {% continue %}
-                {% endif %}
-                {% if operator_page.published == false %}
-                  {% continue %}
-                {% endif %}
-                {% if operator_page_url contains '/_agents/' or operator_page_url contains '/_todo/' %}
-                  {% continue %}
-                {% endif %}
-                {% if vault_ctx_nexus_href and operator_page_url == vault_ctx_nexus_href %}
-                  {% continue %}
-                {% endif %}
-
-                {% assign operator_page_group_key = 'other' %}
-                {% if vault_ctx_nexus_key == 'synthetic_dream_machine' %}
-                  {% if operator_page_path contains 'vault/Synthetic-Dream-Machine/Synthetic_Dream_Machine_' %}
-                    {% assign operator_page_group_key = 'sdm_core' %}
-                  {% elsif operator_page_path contains 'vault/Synthetic-Dream-Machine/Flying_Triremes_and_Laser_Swords/' %}
-                    {% assign operator_page_group_key = 'ad_ftls' %}
-                  {% elsif operator_page_path contains 'vault/Synthetic-Dream-Machine/Elyncia/Elyncia_' %}
-                    {% assign operator_page_group_key = 'ad_elyncia_chapters' %}
-                  {% elsif operator_page_path contains 'vault/Synthetic-Dream-Machine/Elyncia/' %}
-                    {% assign operator_page_group_key = 'ad_elyncia_additional' %}
-                  {% elsif operator_page_path contains 'vault/Synthetic-Dream-Machine/Our_Golden_Age/' or operator_page_path contains 'vault/Synthetic-Dream-Machine/Vastlands_Guidebook/' or operator_page_path contains 'vault/Synthetic-Dream-Machine/Ultraviolet_Grasslands_and_the_Black_City_2e/' %}
-                    {% assign operator_page_group_key = 'wtf_core' %}
-                  {% elsif operator_page_path contains 'vault/Synthetic-Dream-Machine/Eternal_Return_Key/' or operator_page_path contains 'vault/Synthetic-Dream-Machine/Magitecnica/' or operator_page_path contains 'vault/Synthetic-Dream-Machine/There_A_Red_Door/' %}
-                    {% assign operator_page_group_key = 'wtf_supplemental' %}
-                  {% elsif operator_page_path contains 'vault/Synthetic-Dream-Machine/Synthetic-Dream-Machine-3rd-Party-License.md' %}
-                    {% assign operator_page_group_key = 'wtf_supplemental' %}
-                  {% endif %}
-                {% else %}
-                  {% assign operator_relative_url = operator_page_url | remove_first: operator_matched_prefix %}
-                  {% assign operator_relative_url = operator_relative_url | remove_first: '/' %}
-                  {% assign operator_path_parts = operator_relative_url | split: '/' %}
-                  {% assign operator_first_part = operator_path_parts[0] | default: '' %}
-                  {% if operator_first_part != '' %}
-                    {% assign operator_page_group_key = operator_first_part %}
-                  {% endif %}
-                {% endif %}
-                {% unless operator_page_group_key == operator_group_key %}
-                  {% continue %}
-                {% endunless %}
-
-                {% assign operator_page_is_current = false %}
-                {% if operator_page_url == vault_ctx_request_url %}
-                  {% assign operator_page_is_current = true %}
-                {% endif %}
-
-                {% assign operator_page_label = operator_page.title | default: nil %}
-                {% if operator_page_label == nil or operator_page_label == '' %}
-                  {% assign operator_relative_url = operator_page_url | remove_first: operator_matched_prefix %}
-                  {% assign operator_relative_url = operator_relative_url | remove_first: '/' %}
-                  {% assign operator_path_parts = operator_relative_url | split: '/' %}
-                  {% assign operator_leaf = operator_path_parts | last %}
-                  {% assign operator_page_label = operator_leaf | replace: '-', ' ' | replace: '_', ' ' | capitalize %}
-                {% endif %}
-
-                <li class="operator-nav__item">
-                  <a class="operator-nav__link"
-                     href="{{ operator_page_url | relative_url }}"
-                     {% if operator_page_is_current %}aria-current="page"{% endif %}>
-                    {{ operator_page_label }}
-                  </a>
-                </li>
-              {% endfor %}
-            </ul>
-          </details>
-        {% endfor %}
+        {% include vault-operator-nav-groups.html
+          mode='mobile'
+          group_order_compact=operator_group_order_compact
+          group_keys_compact=operator_group_keys_compact
+          group_labels_compact=operator_group_labels_compact
+          entries_compact=operator_entries_compact
+          current_group_key=operator_current_group_key
+        %}
       </nav>
     </dialog>
   </aside>
