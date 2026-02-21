@@ -1328,8 +1328,8 @@ body.book-chapter .markdown-body .heritage-card blockquote,
   color: var(--ink);
 }
 
-body.book-chapter .markdown-body .heritage-card ul,
-.markdown-body .heritage-card ul {
+body.book-chapter .markdown-body .heritage-card > ul,
+.markdown-body .heritage-card > ul {
   margin: 8px 0;
   padding: 8px 12px 8px 1.6em;
   background: rgba(29, 26, 24, 0.6);
@@ -1338,8 +1338,8 @@ body.book-chapter .markdown-body .heritage-card ul,
   color: var(--ink);
 }
 
-body.book-chapter .markdown-body .heritage-card ul li,
-.markdown-body .heritage-card ul li {
+body.book-chapter .markdown-body .heritage-card > ul > li,
+.markdown-body .heritage-card > ul > li {
   margin: 0.25em 0;
 }
 
