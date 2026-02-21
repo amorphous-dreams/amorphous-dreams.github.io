@@ -1,0 +1,64 @@
+{% assign operator_mode = include.mode | default: 'desktop' %}
+{% assign operator_group_order = include.group_order_compact | split: '|' %}
+{% assign operator_entries = include.entries_compact | split: '||ENTRY||' %}
+{% assign operator_group_keys_compact = include.group_keys_compact | default: '' %}
+{% assign operator_group_labels = include.group_labels_compact | split: '||GROUP||' %}
+{% assign operator_current_group_key = include.current_group_key | default: nil %}
+
+{% for operator_group_key in operator_group_order %}
+  {% if operator_group_key == '' %}
+    {% continue %}
+  {% endif %}
+
+  {% assign operator_group_token = '|' | append: operator_group_key | append: '|' %}
+  {% unless operator_group_keys_compact contains operator_group_token %}
+    {% continue %}
+  {% endunless %}
+
+  {% assign operator_group_label = operator_group_key | replace: '-', ' ' | replace: '_', ' ' | capitalize %}
+  {% for operator_group_label_entry in operator_group_labels %}
+    {% if operator_group_label_entry == '' %}
+      {% continue %}
+    {% endif %}
+    {% assign operator_group_label_fields = operator_group_label_entry | split: '@@' %}
+    {% assign operator_group_label_key = operator_group_label_fields[0] | default: '' %}
+    {% if operator_group_label_key == operator_group_key %}
+      {% assign operator_group_label = operator_group_label_fields[1] | default: operator_group_label %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+
+  {% assign operator_group_is_open = false %}
+  {% if operator_group_key == operator_current_group_key %}
+    {% assign operator_group_is_open = true %}
+  {% endif %}
+
+  <details class="operator-nav-group{% if operator_mode == 'mobile' %} operator-nav-group--mobile{% endif %}{% if operator_group_is_open %} operator-nav-group--current{% endif %}" {% if operator_group_is_open %}open{% endif %}>
+    <summary class="operator-nav-group__summary">{{ operator_group_label }}</summary>
+    <ul class="operator-nav__list">
+      {% for operator_entry in operator_entries %}
+        {% if operator_entry == '' %}
+          {% continue %}
+        {% endif %}
+
+        {% assign operator_entry_fields = operator_entry | split: '@@' %}
+        {% assign operator_entry_url = operator_entry_fields[0] | default: '' %}
+        {% assign operator_entry_label = operator_entry_fields[1] | default: '' %}
+        {% assign operator_entry_group_key = operator_entry_fields[2] | default: '' %}
+        {% assign operator_entry_is_current = operator_entry_fields[3] | default: 'false' %}
+
+        {% unless operator_entry_group_key == operator_group_key %}
+          {% continue %}
+        {% endunless %}
+
+        <li class="operator-nav__item">
+          <a class="operator-nav__link"
+             href="{{ operator_entry_url | relative_url }}"
+             {% if operator_entry_is_current == 'true' %}aria-current="page"{% endif %}>
+            {{ operator_entry_label }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </details>
+{% endfor %}

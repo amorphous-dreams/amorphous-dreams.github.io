@@ -18,6 +18,7 @@ plugins:
 source: .
 include: [".htaccess"]
 exclude:
+  - .venv
   - .bundle
   - .bundle/**
   - vendor

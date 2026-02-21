@@ -5,3 +5,60 @@ vault_nodes:
   - label: "More Vaults Soon"
     href: "/vault/"
     summary: "Placeholder route for additional modular vaults."
+
+vault_nexus:
+  synthetic_dream_machine:
+    key: "synthetic_dream_machine"
+    label: "SDM Nexus"
+    href: "/vault/synthetic-dream-machine/"
+    aliases:
+      - "/vault/Synthetic-Dream-Machine/"
+    operator_nav:
+      group_order:
+        - "sdm_core"
+        - "ad_ftls"
+        - "ad_elyncia_chapters"
+        - "ad_elyncia_additional"
+        - "wtf_core"
+        - "wtf_supplemental"
+        - "other"
+      groups:
+        sdm_core:
+          label: "Synthetic Dream Machine"
+          match_paths:
+            - "vault/Synthetic-Dream-Machine/Synthetic_Dream_Machine_"
+        ad_ftls:
+          label: "Amorphous Dreams · Flying Triremes and Laser Swords"
+          match_paths:
+            - "vault/Synthetic-Dream-Machine/Flying_Triremes_and_Laser_Swords/"
+        ad_elyncia_chapters:
+          label: "Amorphous Dreams · Elyncia Chapters"
+          match_paths:
+            - "vault/Synthetic-Dream-Machine/Elyncia/Elyncia_"
+        ad_elyncia_additional:
+          label: "Amorphous Dreams · Additional Elyncia files"
+          match_paths:
+            - "vault/Synthetic-Dream-Machine/Elyncia/"
+        wtf_core:
+          label: "Wizard Thief Fighter · Core Synthetic Dream Machine"
+          match_paths:
+            - "vault/Synthetic-Dream-Machine/Our_Golden_Age/"
+            - "vault/Synthetic-Dream-Machine/Vastlands_Guidebook/"
+            - "vault/Synthetic-Dream-Machine/Ultraviolet_Grasslands_and_the_Black_City_2e/"
+        wtf_supplemental:
+          label: "Wizard Thief Fighter · SDM Supplemental Materials"
+          match_paths:
+            - "vault/Synthetic-Dream-Machine/Eternal_Return_Key/"
+            - "vault/Synthetic-Dream-Machine/Magitecnica/"
+            - "vault/Synthetic-Dream-Machine/There_A_Red_Door/"
+            - "vault/Synthetic-Dream-Machine/Synthetic-Dream-Machine-3rd-Party-License.md"
+    books:
+      - key: "quickstart"
+        label: "Quickstart"
+        href: "/vault/Synthetic-Dream-Machine/Synthetic_Dream_Machine_01_Quickstart/"
+      - key: "paths_index"
+        label: "Paths Index"
+        href: "/vault/Synthetic-Dream-Machine/Synthetic_Dream_Machine_02_Paths_Index/"
+      - key: "traits_index"
+        label: "Traits Index"
+        href: "/vault/Synthetic-Dream-Machine/Synthetic_Dream_Machine_03_Traits_Index/"

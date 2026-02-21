@@ -1,0 +1,171 @@
+<script>
+(function () {
+  var tableIdCounter = 0;
+
+  function normalizeText(text) {
+    return (text || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function getTableCaptionId(table) {
+    if (!table) return null;
+    var caption = table.caption;
+    if (!caption) return null;
+    if (!caption.id) {
+      tableIdCounter += 1;
+      caption.id = 'table-caption-' + tableIdCounter;
+    }
+    return caption.id;
+  }
+
+  function updateWrapperScrollState(wrapper) {
+    if (!wrapper) return;
+    var maxLeft = wrapper.scrollWidth - wrapper.clientWidth;
+    if (maxLeft <= 1) {
+      wrapper.dataset.scrollState = 'none';
+      return;
+    }
+
+    var current = wrapper.scrollLeft;
+    if (current <= 1) {
+      wrapper.dataset.scrollState = 'start';
+      return;
+    }
+
+    if (current >= maxLeft - 1) {
+      wrapper.dataset.scrollState = 'end';
+      return;
+    }
+
+    wrapper.dataset.scrollState = 'middle';
+  }
+
+  function isComplexTable(table) {
+    var complexCell = table.querySelector('th[colspan], th[rowspan], td[colspan], td[rowspan]');
+    if (!complexCell) return false;
+    var colSpan = parseInt(complexCell.getAttribute('colspan') || '1', 10);
+    var rowSpan = parseInt(complexCell.getAttribute('rowspan') || '1', 10);
+    return colSpan > 1 || rowSpan > 1;
+  }
+
+  function isCompactHeader(label) {
+    return /^(cost|price|qty|quantity|wt|weight|gp|sp|cp|hp|ac|id|lvl|level|roll|die|dice|slots?|hands?|size|uses?)$/i.test(label);
+  }
+
+  function isWideHeader(label) {
+    return /(description|details|notes|effect|hook|expert|master|traits|abilities|rules|summary|features?|overview|lore|requirements?)/i.test(label);
+  }
+
+  function getPercentile(lengths, percentile) {
+    if (!lengths.length) return 0;
+    var sorted = lengths.slice().sort(function (a, b) { return a - b; });
+    var index = Math.max(0, Math.min(sorted.length - 1, Math.floor((sorted.length - 1) * percentile)));
+    return sorted[index];
+  }
+
+  function applyDynamicColumnSizing(table) {
+    if (!table || table.dataset.dynamicColsApplied === 'true') return;
+    if (isComplexTable(table)) return;
+
+    var headerRow = null;
+    if (table.tHead && table.tHead.rows && table.tHead.rows.length) {
+      headerRow = table.tHead.rows[0];
+    } else if (table.rows && table.rows.length) {
+      headerRow = table.rows[0];
+    }
+    if (!headerRow || !headerRow.cells || !headerRow.cells.length) return;
+
+    var columnCount = headerRow.cells.length;
+    var columnScores = new Array(columnCount).fill(10);
+
+    for (var i = 0; i < columnCount; i++) {
+      var headerLabel = normalizeText(headerRow.cells[i].textContent);
+      var headerLength = Math.max(4, Math.min(42, headerLabel.length));
+      var lengths = [headerLength];
+
+      var bodyRows = table.tBodies && table.tBodies.length ? table.tBodies[0].rows : [];
+      var sampleRows = Math.min(bodyRows.length, 40);
+      for (var rowIndex = 0; rowIndex < sampleRows; rowIndex++) {
+        var row = bodyRows[rowIndex];
+        if (!row || !row.cells || i >= row.cells.length) continue;
+        var cellText = normalizeText(row.cells[i].textContent);
+        if (!cellText) continue;
+        lengths.push(Math.min(84, cellText.length));
+      }
+
+      var target = getPercentile(lengths, 0.85);
+      if (isCompactHeader(headerLabel)) {
+        target = Math.min(target, 11);
+      }
+      if (isWideHeader(headerLabel)) {
+        target = Math.max(target, 26);
+      }
+
+      columnScores[i] = Math.max(7, Math.min(44, target));
+    }
+
+    var total = columnScores.reduce(function (sum, value) { return sum + value; }, 0);
+    if (!total) return;
+
+    var existing = table.querySelector('colgroup[data-auto-cols="true"]');
+    if (existing) existing.remove();
+
+    var colgroup = document.createElement('colgroup');
+    colgroup.setAttribute('data-auto-cols', 'true');
+
+    for (var columnIndex = 0; columnIndex < columnCount; columnIndex++) {
+      var percentage = (columnScores[columnIndex] / total) * 100;
+      var col = document.createElement('col');
+      col.style.width = percentage.toFixed(3) + '%';
+      colgroup.appendChild(col);
+    }
+
+    table.insertBefore(colgroup, table.firstChild);
+    table.style.minWidth = Math.max(total * 10.5, 680) + 'px';
+    table.dataset.dynamicColsApplied = 'true';
+  }
+
+  function initMarkdownTableScroll() {
+    var tables = document.querySelectorAll('.page-card .markdown-body table');
+    if (!tables.length) return;
+
+    tables.forEach(function (table) {
+      if (!table.parentNode) return;
+      var wrapper = table.closest('.table-scroll');
+
+      if (!wrapper) {
+        wrapper = document.createElement('div');
+        wrapper.className = 'table-scroll';
+        table.parentNode.insertBefore(wrapper, table);
+        wrapper.appendChild(table);
+      }
+
+      var captionId = getTableCaptionId(table);
+      wrapper.setAttribute('role', 'region');
+      wrapper.setAttribute('tabindex', '0');
+      if (captionId) {
+        wrapper.setAttribute('aria-labelledby', captionId);
+        wrapper.removeAttribute('aria-label');
+      } else {
+        wrapper.removeAttribute('aria-labelledby');
+        wrapper.setAttribute('aria-label', 'Scrollable data table');
+      }
+
+      if (wrapper.dataset.scrollTrackingBound !== 'true') {
+        wrapper.addEventListener('scroll', function () {
+          updateWrapperScrollState(wrapper);
+        }, { passive: true });
+        wrapper.dataset.scrollTrackingBound = 'true';
+      }
+
+      applyDynamicColumnSizing(table);
+      updateWrapperScrollState(wrapper);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMarkdownTableScroll);
+  } else {
+    initMarkdownTableScroll();
+  }
+})();
+</script>

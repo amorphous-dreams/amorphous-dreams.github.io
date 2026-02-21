@@ -1,0 +1,170 @@
+{% assign vault_ctx_header_nav_context = page.header_nav_context | default: nil %}
+
+{% assign vault_ctx_request_url = page.url | default: '/' %}
+{% unless vault_ctx_request_url == '/' %}
+  {% assign vault_ctx_request_last_char = vault_ctx_request_url | slice: -1, 1 %}
+  {% unless vault_ctx_request_last_char == '/' %}
+    {% assign vault_ctx_request_url = vault_ctx_request_url | append: '/' %}
+  {% endunless %}
+{% endunless %}
+{% assign vault_ctx_request_url_lower = vault_ctx_request_url | downcase %}
+
+{% assign vault_ctx_is_vault_page = false %}
+{% if vault_ctx_request_url == '/vault/' or vault_ctx_request_url == '/vault' or vault_ctx_request_url contains '/vault/' %}
+  {% assign vault_ctx_is_vault_page = true %}
+{% endif %}
+
+{% assign vault_ctx_nexus_key = page.vault_nexus_key | default: nil %}
+{% assign vault_ctx_nexus_data = nil %}
+
+{% if vault_ctx_nexus_key and site.data.nav.vault_nexus and site.data.nav.vault_nexus[vault_ctx_nexus_key] %}
+  {% assign vault_ctx_nexus_data = site.data.nav.vault_nexus[vault_ctx_nexus_key] %}
+{% endif %}
+
+{% if vault_ctx_nexus_data == nil and site.data.nav.vault_nexus %}
+  {% for nexus_entry in site.data.nav.vault_nexus %}
+    {% assign vault_ctx_candidate_key = nexus_entry[0] %}
+    {% assign vault_ctx_candidate = nexus_entry[1] %}
+    {% assign vault_ctx_candidate_href = vault_ctx_candidate.href | default: '' %}
+    {% assign vault_ctx_candidate_href_lower = vault_ctx_candidate_href | downcase %}
+    {% assign vault_ctx_candidate_match = false %}
+
+    {% if vault_ctx_candidate_href_lower != '' %}
+      {% assign vault_ctx_candidate_size = vault_ctx_candidate_href_lower | size %}
+      {% assign vault_ctx_request_head = vault_ctx_request_url_lower | slice: 0, vault_ctx_candidate_size %}
+      {% if vault_ctx_request_head == vault_ctx_candidate_href_lower %}
+        {% assign vault_ctx_candidate_match = true %}
+      {% endif %}
+    {% endif %}
+
+    {% if vault_ctx_candidate_match == false and vault_ctx_candidate.aliases %}
+      {% for alias_href in vault_ctx_candidate.aliases %}
+        {% assign vault_ctx_alias_lower = alias_href | downcase %}
+        {% assign vault_ctx_alias_size = vault_ctx_alias_lower | size %}
+        {% assign vault_ctx_alias_head = vault_ctx_request_url_lower | slice: 0, vault_ctx_alias_size %}
+        {% if vault_ctx_alias_head == vault_ctx_alias_lower %}
+          {% assign vault_ctx_candidate_match = true %}
+          {% break %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    {% if vault_ctx_candidate_match %}
+      {% assign vault_ctx_nexus_key = vault_ctx_candidate_key %}
+      {% assign vault_ctx_nexus_data = vault_ctx_candidate %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% assign vault_ctx_nexus_label = nil %}
+{% assign vault_ctx_nexus_href = nil %}
+{% assign vault_ctx_nexus_aliases = nil %}
+{% assign vault_ctx_nexus_paths_compact = '' %}
+{% assign vault_ctx_sibling_books = nil %}
+
+{% if vault_ctx_nexus_data %}
+  {% assign vault_ctx_nexus_label = vault_ctx_nexus_data.label | default: nil %}
+  {% assign vault_ctx_nexus_href = vault_ctx_nexus_data.href | default: nil %}
+  {% assign vault_ctx_nexus_aliases = vault_ctx_nexus_data.aliases | default: nil %}
+  {% assign vault_ctx_sibling_books = vault_ctx_nexus_data.books | default: nil %}
+{% endif %}
+
+{% if vault_ctx_nexus_href %}
+  {% assign vault_ctx_nexus_path = vault_ctx_nexus_href %}
+  {% assign vault_ctx_nexus_path_last_char = vault_ctx_nexus_path | slice: -1, 1 %}
+  {% unless vault_ctx_nexus_path_last_char == '/' %}
+    {% assign vault_ctx_nexus_path = vault_ctx_nexus_path | append: '/' %}
+  {% endunless %}
+  {% assign vault_ctx_nexus_paths_compact = vault_ctx_nexus_paths_compact | append: '|' | append: vault_ctx_nexus_path | append: '|' %}
+{% endif %}
+
+{% if vault_ctx_nexus_aliases %}
+  {% for nexus_alias in vault_ctx_nexus_aliases %}
+    {% assign vault_ctx_alias_path = nexus_alias %}
+    {% assign vault_ctx_alias_last_char = vault_ctx_alias_path | slice: -1, 1 %}
+    {% unless vault_ctx_alias_last_char == '/' %}
+      {% assign vault_ctx_alias_path = vault_ctx_alias_path | append: '/' %}
+    {% endunless %}
+    {% assign vault_ctx_alias_token = '|' | append: vault_ctx_alias_path | append: '|' %}
+    {% unless vault_ctx_nexus_paths_compact contains vault_ctx_alias_token %}
+      {% assign vault_ctx_nexus_paths_compact = vault_ctx_nexus_paths_compact | append: vault_ctx_alias_token %}
+    {% endunless %}
+  {% endfor %}
+{% endif %}
+
+{% assign vault_ctx_book_key = page.vault_book_key | default: nil %}
+{% assign vault_ctx_book_href = nil %}
+{% assign vault_ctx_book_label = nil %}
+
+{% if vault_ctx_book_key == nil and vault_ctx_sibling_books %}
+  {% for sibling_book in vault_ctx_sibling_books %}
+    {% assign sibling_href = sibling_book.href | default: '' %}
+    {% unless sibling_href == '' %}
+      {% assign sibling_href_last_char = sibling_href | slice: -1, 1 %}
+      {% unless sibling_href_last_char == '/' %}
+        {% assign sibling_href = sibling_href | append: '/' %}
+      {% endunless %}
+      {% if vault_ctx_request_url == sibling_href %}
+        {% assign vault_ctx_book_key = sibling_book.key | default: nil %}
+        {% break %}
+      {% endif %}
+    {% endunless %}
+  {% endfor %}
+{% endif %}
+
+{% if vault_ctx_book_key and vault_ctx_sibling_books %}
+  {% for sibling_book in vault_ctx_sibling_books %}
+    {% if sibling_book.key == vault_ctx_book_key %}
+      {% assign vault_ctx_book_href = sibling_book.href | default: nil %}
+      {% assign vault_ctx_book_label = sibling_book.label | default: nil %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% assign vault_ctx_parent_href = page.vault_parent_href | default: nil %}
+{% assign vault_ctx_parent_label = page.vault_parent_label | default: nil %}
+
+{% if vault_ctx_parent_href == nil and vault_ctx_nexus_href %}
+  {% assign vault_ctx_parent_href = vault_ctx_nexus_href %}
+{% endif %}
+{% if vault_ctx_parent_label == nil and vault_ctx_nexus_label %}
+  {% assign vault_ctx_parent_label = vault_ctx_nexus_label %}
+{% endif %}
+
+{% if vault_ctx_parent_href == nil and vault_ctx_is_vault_page %}
+  {% if vault_ctx_request_url == '/vault/' or vault_ctx_request_url == '/vault' %}
+    {% assign vault_ctx_parent_href = nil %}
+    {% assign vault_ctx_parent_label = nil %}
+  {% elsif vault_ctx_request_url contains '/vault/synthetic-dream-machine/' or vault_ctx_request_url contains '/vault/Synthetic-Dream-Machine/' %}
+    {% assign vault_ctx_parent_href = '/vault/synthetic-dream-machine/' %}
+    {% assign vault_ctx_parent_label = 'SDM Nexus' %}
+  {% else %}
+    {% assign request_parts = vault_ctx_request_url | split: '/' %}
+    {% assign vault_section = request_parts[2] %}
+    {% if vault_section and vault_section != '' %}
+      {% assign vault_ctx_parent_href = '/vault/' | append: vault_section | append: '/' %}
+      {% assign vault_ctx_parent_label = vault_section | replace: '-', ' ' | replace: '_', ' ' | capitalize %}
+    {% endif %}
+  {% endif %}
+{% endif %}
+
+{% assign vault_ctx_is_vault_book_page = false %}
+{% if vault_ctx_is_vault_page and vault_ctx_request_url != '/vault/' and vault_ctx_request_url != '/vault' %}
+  {% assign vault_ctx_is_vault_book_page = true %}
+  {% if vault_ctx_nexus_href %}
+    {% assign vault_ctx_nexus_href_last_char = vault_ctx_nexus_href | slice: -1, 1 %}
+    {% unless vault_ctx_nexus_href_last_char == '/' %}
+      {% assign vault_ctx_nexus_href = vault_ctx_nexus_href | append: '/' %}
+    {% endunless %}
+    {% if vault_ctx_request_url == vault_ctx_nexus_href %}
+      {% assign vault_ctx_is_vault_book_page = false %}
+    {% endif %}
+  {% endif %}
+{% endif %}
+
+{% assign vault_ctx_show_operator_nav = false %}
+{% if vault_ctx_is_vault_book_page and vault_ctx_nexus_key and vault_ctx_sibling_books %}
+  {% assign vault_ctx_show_operator_nav = true %}
+{% endif %}
