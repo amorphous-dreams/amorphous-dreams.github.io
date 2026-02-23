@@ -1,0 +1,344 @@
+<script>
+(function () {
+  function normalizeText(text) {
+    return (text || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function slugify(text) {
+    var normalized = normalizeText(text).toLowerCase();
+    if (!normalized) return 'section';
+    return normalized
+      .replace(/['"`]/g, '')
+      .replace(/&/g, ' and ')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'section';
+  }
+
+  function collectExistingIds(root) {
+    var ids = new Set();
+    if (!root) return ids;
+    var nodes = root.querySelectorAll('[id]');
+    nodes.forEach(function (node) {
+      if (node.id) ids.add(node.id);
+    });
+    return ids;
+  }
+
+  function ensureHeadingId(heading, usedIds) {
+    if (!heading) return null;
+    if (heading.id && !usedIds.has(heading.id)) {
+      usedIds.add(heading.id);
+      return heading.id;
+    }
+    if (heading.id) return heading.id;
+
+    var base = slugify(heading.textContent);
+    var candidate = base;
+    var index = 2;
+    while (usedIds.has(candidate)) {
+      candidate = base + '-' + index;
+      index += 1;
+    }
+    heading.id = candidate;
+    usedIds.add(candidate);
+    return candidate;
+  }
+
+  function hidePageNav(toggle, shell) {
+    if (toggle) {
+      toggle.hidden = true;
+      toggle.disabled = true;
+      toggle.setAttribute('aria-hidden', 'true');
+    }
+    if (shell) shell.setAttribute('hidden', 'hidden');
+  }
+
+  function setActiveLink(activeId, linksById) {
+    Object.keys(linksById).forEach(function (id) {
+      linksById[id].forEach(function (link) {
+        var isActive = id === activeId;
+        link.classList.toggle('page-nav__link--active', isActive);
+        if (isActive) {
+          link.setAttribute('aria-current', 'location');
+        } else {
+          link.removeAttribute('aria-current');
+        }
+      });
+    });
+  }
+
+  function initPageNav() {
+    var shell = document.querySelector('.page-nav-shell');
+    var toggle = document.querySelector('.js-page-nav-open');
+    if (!shell || !toggle) return;
+
+    var panelId = toggle.getAttribute('aria-controls');
+    var dialog = panelId ? document.getElementById(panelId) : null;
+    if (!dialog || typeof dialog.showModal !== 'function') return;
+
+    var closeButton = dialog.querySelector('.js-page-nav-close');
+    var markdownRoot = document.querySelector('.page-card .markdown-body');
+    var listTargets = document.querySelectorAll('.js-page-nav-list');
+    var filterInputs = document.querySelectorAll('.js-page-nav-filter');
+    var emptyStates = document.querySelectorAll('.js-page-nav-empty');
+    if (!markdownRoot || !listTargets.length) {
+      hidePageNav(toggle, shell);
+      return;
+    }
+
+    var headings = Array.prototype.slice.call(markdownRoot.querySelectorAll('h1, h2, h3, h4'))
+      .filter(function (heading) {
+        return normalizeText(heading.textContent) !== '';
+      });
+
+    if (!headings.length) {
+      hidePageNav(toggle, shell);
+      return;
+    }
+
+    if (document.querySelector('.operator-nav-toggle')) {
+      toggle.classList.add('page-nav-toggle--stacked');
+    }
+
+    var usedIds = collectExistingIds(markdownRoot);
+    var headingItems = [];
+    headings.forEach(function (heading) {
+      var headingId = ensureHeadingId(heading, usedIds);
+      var headingText = normalizeText(heading.textContent);
+      if (!headingId || !headingText) return;
+
+      var level = parseInt((heading.tagName || 'H2').replace('H', ''), 10);
+      if (!level || level < 1 || level > 4) return;
+
+      headingItems.push({
+        id: headingId,
+        level: level,
+        label: headingText
+      });
+    });
+
+    if (!headingItems.length) {
+      hidePageNav(toggle, shell);
+      return;
+    }
+
+    var linksById = {};
+    listTargets.forEach(function (target) {
+      target.innerHTML = '';
+      var frag = document.createDocumentFragment();
+
+      headingItems.forEach(function (item) {
+        var li = document.createElement('li');
+        li.className = 'page-nav__item page-nav__item--level-' + item.level;
+        li.setAttribute('data-level', String(item.level));
+        li.setAttribute('data-page-nav-label', item.label.toLowerCase());
+
+        var link = document.createElement('a');
+        link.className = 'page-nav__link js-page-nav-link';
+        link.setAttribute('href', '#' + item.id);
+        link.textContent = item.label;
+        link.setAttribute('data-target-id', item.id);
+
+        if (!linksById[item.id]) linksById[item.id] = [];
+        linksById[item.id].push(link);
+
+        link.addEventListener('click', function () {
+          setActiveLink(item.id, linksById);
+          if (dialog.open) dialog.close();
+        });
+
+        li.appendChild(link);
+        frag.appendChild(li);
+      });
+
+      target.appendChild(frag);
+    });
+
+    function applyFilter(rawQuery) {
+      var query = normalizeText(rawQuery).toLowerCase();
+
+      listTargets.forEach(function (target, index) {
+        var visibleCount = 0;
+        var items = target.querySelectorAll('.page-nav__item');
+        items.forEach(function (item) {
+          var label = item.getAttribute('data-page-nav-label') || '';
+          var showItem = query === '' || label.indexOf(query) !== -1;
+          item.hidden = !showItem;
+          if (showItem) visibleCount += 1;
+        });
+
+        var empty = emptyStates[index];
+        if (empty) {
+          empty.hidden = visibleCount > 0;
+        }
+      });
+    }
+
+    function syncFilterInputs(value) {
+      filterInputs.forEach(function (input) {
+        if (input.value !== value) input.value = value;
+      });
+    }
+
+    filterInputs.forEach(function (input) {
+      input.addEventListener('input', function () {
+        var nextValue = input.value || '';
+        syncFilterInputs(nextValue);
+        applyFilter(nextValue);
+      });
+
+      input.addEventListener('search', function () {
+        var nextValue = input.value || '';
+        syncFilterInputs(nextValue);
+        applyFilter(nextValue);
+      });
+    });
+
+    applyFilter('');
+
+    function closeDialog() {
+      if (dialog.open) dialog.close();
+    }
+
+    toggle.addEventListener('click', function () {
+      if (!dialog.open) {
+        dialog.showModal();
+        toggle.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    if (closeButton) {
+      closeButton.addEventListener('click', function () {
+        closeDialog();
+      });
+    }
+
+    dialog.addEventListener('close', function () {
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.focus();
+    });
+
+    dialog.addEventListener('click', function (event) {
+      var rect = dialog.getBoundingClientRect();
+      var inside =
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
+        event.clientY <= rect.bottom;
+      if (!inside) closeDialog();
+    });
+
+    var visibleHeadings = new Map();
+    var headingById = {};
+    headings.forEach(function (heading) {
+      if (heading.id) headingById[heading.id] = heading;
+    });
+
+    function findActiveByScroll() {
+      if (window.scrollY <= 64) return headingItems[0].id;
+
+      var visible = Array.from(visibleHeadings.values())
+        .filter(function (entry) { return entry.isIntersecting; })
+        .sort(function (a, b) { return a.top - b.top; });
+
+      if (visible.length) {
+        for (var i = 0; i < visible.length; i += 1) {
+          if (visible[i].top >= -8) return visible[i].id;
+        }
+        return visible[visible.length - 1].id;
+      }
+
+      var fallbackId = headingItems[0].id;
+      var offset = 140;
+      headingItems.forEach(function (item) {
+        var node = headingById[item.id];
+        if (!node) return;
+        if (node.getBoundingClientRect().top <= offset) {
+          fallbackId = item.id;
+        }
+      });
+      return fallbackId;
+    }
+
+    function syncActiveFromHash() {
+      var hash = window.location.hash || '';
+      if (!hash || hash.length < 2) return false;
+      var candidate = decodeURIComponent(hash.slice(1));
+      if (!linksById[candidate]) return false;
+      setActiveLink(candidate, linksById);
+      return true;
+    }
+
+    if (!syncActiveFromHash()) {
+      setActiveLink(headingItems[0].id, linksById);
+    }
+
+    if ('IntersectionObserver' in window) {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          var targetId = entry.target && entry.target.id ? entry.target.id : '';
+          if (!targetId) return;
+          visibleHeadings.set(targetId, {
+            id: targetId,
+            isIntersecting: entry.isIntersecting,
+            top: entry.boundingClientRect.top
+          });
+        });
+
+        if (!syncActiveFromHash()) {
+          setActiveLink(findActiveByScroll(), linksById);
+        }
+      }, {
+        root: null,
+        rootMargin: '-15% 0px -60% 0px',
+        threshold: [0, 1]
+      });
+
+      headings.forEach(function (heading) {
+        observer.observe(heading);
+      });
+    } else {
+      var onScroll = function () {
+        if (!syncActiveFromHash()) {
+          setActiveLink(findActiveByScroll(), linksById);
+        }
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    }
+
+    window.addEventListener('hashchange', function () {
+      if (!syncActiveFromHash()) {
+        setActiveLink(findActiveByScroll(), linksById);
+      }
+    });
+
+    window.addEventListener('keydown', function (event) {
+      if (!dialog.open) return;
+      if (event.key !== '/') return;
+
+      var target = event.target;
+      if (target && (
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.tagName === 'SELECT' ||
+        target.isContentEditable
+      )) {
+        return;
+      }
+
+      var dialogFilter = dialog.querySelector('.js-page-nav-filter');
+      if (!dialogFilter) return;
+      event.preventDefault();
+      dialogFilter.focus();
+      dialogFilter.select();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPageNav);
+  } else {
+    initPageNav();
+  }
+})();
+</script>

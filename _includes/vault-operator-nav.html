@@ -134,6 +134,12 @@
 
     <nav class="operator-nav operator-nav--desktop" aria-label="Operator navigation">
       <h2 class="operator-nav__title">Operator Nav</h2>
+      <input class="operator-nav__filter js-operator-nav-filter"
+             type="search"
+             placeholder="Search this list"
+             aria-label="Search this list"
+             autocomplete="off"
+             spellcheck="false">
 
       {% if vault_ctx_nexus_href %}
         <p class="operator-nav__nexus">
@@ -144,6 +150,7 @@
           </a>
         </p>
       {% endif %}
+      <p class="operator-nav__empty js-operator-nav-empty" hidden>No matching pages.</p>
       {% include vault-operator-nav-groups.html
         mode='desktop'
         group_order_compact=operator_group_order_compact
@@ -161,6 +168,12 @@
       </div>
 
       <nav class="operator-nav operator-nav--mobile" aria-label="Operator navigation mobile">
+        <input class="operator-nav__filter js-operator-nav-filter"
+               type="search"
+               placeholder="Search this list"
+               aria-label="Search this list"
+               autocomplete="off"
+               spellcheck="false">
         {% if vault_ctx_nexus_href %}
           <p class="operator-nav__nexus">
             <a class="operator-nav__link operator-nav__link--nexus"
@@ -170,6 +183,7 @@
             </a>
           </p>
         {% endif %}
+        <p class="operator-nav__empty js-operator-nav-empty" hidden>No matching pages.</p>
         {% include vault-operator-nav-groups.html
           mode='mobile'
           group_order_compact=operator_group_order_compact
