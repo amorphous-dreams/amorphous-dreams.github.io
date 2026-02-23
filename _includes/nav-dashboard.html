@@ -28,13 +28,17 @@
         {% endif %}
       {% endif %}
       <div class="card-entry">
-        <a class="nav-link" href="{{ item.href | relative_url }}">{{ display_label }}</a>
+        {% assign card_icon = item.icon | default: 'document' %}
+        <a class="nav-link" href="{{ item.href | relative_url }}">
+          {% include game_icon.html name=card_icon class='game-icon--sm' %}
+          <span class="nav-link__text">{{ display_label }}</span>
+        </a>
         {% if item.download %}
           <a class="download-link"
              href="{{ item.download | relative_url }}"
              download
              aria-label="Download {{ item.label }}">
-            📥
+            {% include game_icon.html name='download' class='game-icon--sm' %}
           </a>
         {% endif %}
       </div>

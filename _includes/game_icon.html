@@ -1,0 +1,6 @@
+{% assign game_icon_name = include.name | default: '' %}
+{% if game_icon_name != '' %}
+  <span class="game-icon{% if include.class %} {{ include.class }}{% endif %}"
+        aria-hidden="true"
+        style="--game-icon-url: url('{{ '/assets/icons/game-icons/' | append: game_icon_name | append: '.svg' | relative_url }}');"></span>
+{% endif %}
