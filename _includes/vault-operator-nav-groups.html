@@ -33,7 +33,7 @@
     {% assign operator_group_is_open = true %}
   {% endif %}
 
-  <details class="operator-nav-group{% if operator_mode == 'mobile' %} operator-nav-group--mobile{% endif %}{% if operator_group_is_open %} operator-nav-group--current{% endif %}" {% if operator_group_is_open %}open{% endif %}>
+  <details class="operator-nav-group js-operator-nav-group{% if operator_mode == 'mobile' %} operator-nav-group--mobile{% endif %}{% if operator_group_is_open %} operator-nav-group--current{% endif %}" {% if operator_group_is_open %}open{% endif %}>
     <summary class="operator-nav-group__summary">{{ operator_group_label }}</summary>
     <ul class="operator-nav__list">
       {% for operator_entry in operator_entries %}
@@ -52,7 +52,7 @@
         {% endunless %}
 
         <li class="operator-nav__item">
-          <a class="operator-nav__link"
+          <a class="operator-nav__link js-operator-nav-entry"
              href="{{ operator_entry_url | relative_url }}"
              {% if operator_entry_is_current == 'true' %}aria-current="page"{% endif %}>
             {{ operator_entry_label }}

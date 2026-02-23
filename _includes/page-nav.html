@@ -1,0 +1,44 @@
+{% assign page_nav_panel_id = 'page-nav-panel' %}
+{% assign page_nav_slug = page.url | default: '' | downcase | replace: '/', '-' | replace: '.', '-' | replace: ' ', '-' %}
+{% if page_nav_slug != '' %}
+  {% assign page_nav_panel_id = page_nav_panel_id | append: '-' | append: page_nav_slug %}
+{% endif %}
+
+<aside class="page-nav-shell" aria-label="Page tools">
+  <button class="page-nav-toggle js-page-nav-open"
+          type="button"
+          aria-expanded="false"
+          aria-controls="{{ page_nav_panel_id }}">
+    Page Nav
+  </button>
+
+  <nav class="page-nav page-nav--desktop" aria-label="Page navigation">
+    <h2 class="page-nav__title">Page Nav - {{ page.title | default: 'Untitled Document' | escape }}</h2>
+    <input class="page-nav__filter js-page-nav-filter"
+           type="search"
+           placeholder="Search this ToC"
+           aria-label="Search this ToC"
+           autocomplete="off"
+           spellcheck="false">
+    <p class="page-nav__empty js-page-nav-empty" hidden>No matching headings.</p>
+    <ul class="page-nav__list js-page-nav-list" data-page-nav-list="desktop"></ul>
+  </nav>
+
+  <dialog class="page-nav-dialog" id="{{ page_nav_panel_id }}" aria-label="Page navigation panel">
+    <div class="page-nav-dialog__header">
+      <h2 class="page-nav__title">Page Nav - {{ page.title | default: 'Untitled Document' | escape }}</h2>
+      <button class="page-nav-dialog__close js-page-nav-close" type="button">Close</button>
+    </div>
+
+    <nav class="page-nav page-nav--mobile" aria-label="Page navigation mobile">
+      <input class="page-nav__filter js-page-nav-filter"
+             type="search"
+             placeholder="Search this ToC"
+             aria-label="Search this ToC"
+             autocomplete="off"
+             spellcheck="false">
+      <p class="page-nav__empty js-page-nav-empty" hidden>No matching headings.</p>
+      <ul class="page-nav__list js-page-nav-list" data-page-nav-list="mobile"></ul>
+    </nav>
+  </dialog>
+</aside>

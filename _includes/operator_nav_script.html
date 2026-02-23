@@ -1,5 +1,9 @@
 <script>
 (function () {
+  function normalizeText(text) {
+    return (text || '').replace(/\s+/g, ' ').trim().toLowerCase();
+  }
+
   function initOperatorNav() {
     var openButtons = document.querySelectorAll('.js-operator-nav-open');
     if (!openButtons || !openButtons.length) return;
@@ -13,13 +17,96 @@
       var dialog = document.getElementById(panelId);
       if (!dialog || typeof dialog.showModal !== 'function') return;
 
+      var shell = openButton.closest('.operator-nav-shell');
+      if (!shell) return;
       var closeButton = dialog.querySelector('.js-operator-nav-close');
+      var navContainers = shell.querySelectorAll('.operator-nav');
+      var filterInputs = shell.querySelectorAll('.js-operator-nav-filter');
+      var emptyStates = shell.querySelectorAll('.js-operator-nav-empty');
 
       function closeDialog() {
         if (dialog.open) {
           dialog.close();
         }
       }
+
+      function applyFilter(rawQuery) {
+        var query = normalizeText(rawQuery);
+
+        navContainers.forEach(function (nav, index) {
+          var visibleEntries = 0;
+          var visibleNexus = 0;
+          var entries = nav.querySelectorAll('.js-operator-nav-entry');
+          entries.forEach(function (entry) {
+            var label = normalizeText(entry.textContent);
+            var matches = query === '' || label.indexOf(query) !== -1;
+            var item = entry.closest('.operator-nav__item');
+            if (item) {
+              item.hidden = !matches;
+            }
+            if (matches) {
+              visibleEntries += 1;
+            }
+          });
+
+          var groups = nav.querySelectorAll('.js-operator-nav-group');
+          groups.forEach(function (group) {
+            if (!group.dataset.defaultOpen) {
+              group.dataset.defaultOpen = group.open ? 'true' : 'false';
+            }
+            var groupEntries = group.querySelectorAll('.operator-nav__item');
+            var visibleInGroup = 0;
+            groupEntries.forEach(function (item) {
+              if (!item.hidden) visibleInGroup += 1;
+            });
+
+            var hasMatches = visibleInGroup > 0;
+            group.hidden = !hasMatches;
+            if (query === '') {
+              group.open = group.dataset.defaultOpen === 'true';
+            } else if (hasMatches) {
+              group.open = true;
+            }
+          });
+
+          var nexus = nav.querySelector('.operator-nav__nexus');
+          if (nexus) {
+            var nexusLabel = normalizeText(nexus.textContent);
+            var showNexus = query === '' || nexusLabel.indexOf(query) !== -1;
+            nexus.hidden = !showNexus;
+            visibleNexus = showNexus ? 1 : 0;
+          }
+
+          var empty = emptyStates[index];
+          if (empty) {
+            empty.hidden = (visibleEntries + visibleNexus) > 0;
+          }
+        });
+      }
+
+      function syncFilterInputs(value) {
+        filterInputs.forEach(function (input) {
+          if (input.value !== value) {
+            input.value = value;
+          }
+        });
+      }
+
+      filterInputs.forEach(function (input) {
+        input.addEventListener('input', function () {
+          var nextValue = input.value || '';
+          syncFilterInputs(nextValue);
+          applyFilter(nextValue);
+        });
+
+        input.addEventListener('search', function () {
+          var nextValue = input.value || '';
+          syncFilterInputs(nextValue);
+          applyFilter(nextValue);
+        });
+      });
+
+      applyFilter('');
 
       openButton.addEventListener('click', function () {
         if (!dialog.open) {
