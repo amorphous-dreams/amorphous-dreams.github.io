@@ -543,10 +543,14 @@ h1 { font-size: clamp(2rem, 3vw, 3rem); margin: 0 0 12px; letter-spacing:0.04em;
 
 .page-card .markdown-body .table-scroll,
 body.book-chapter .page-card .markdown-body .table-scroll {
+  display: block;
   position: relative;
   margin: 1rem 0;
   overflow-x: auto;
-  overflow-y: visible;
+  overflow-y: auto;
+  max-height: min(56dvh, 32rem);
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
   -webkit-overflow-scrolling: touch;
   scrollbar-gutter: stable both-edges;
 }
@@ -616,6 +620,9 @@ body.book-chapter .page-card .markdown-body table {
 
 .page-card .markdown-body table thead th,
 body.book-chapter .page-card .markdown-body table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 4;
   background: linear-gradient(180deg, rgba(52, 46, 40, 0.98), rgba(36, 31, 27, 0.98));
   background-clip: padding-box;
   color: var(--ink);
@@ -684,6 +691,18 @@ body.book-chapter .page-card .markdown-body .table-scroll::-webkit-scrollbar-tra
 .page-card .markdown-body > * {
   position: relative;
   z-index: 1;
+}
+
+.page-card .markdown-body ul ul,
+.page-card .markdown-body ul ol,
+.page-card .markdown-body ol ul,
+.page-card .markdown-body ol ol,
+body.book-chapter .page-card .markdown-body ul ul,
+body.book-chapter .page-card .markdown-body ul ol,
+body.book-chapter .page-card .markdown-body ol ul,
+body.book-chapter .page-card .markdown-body ol ol {
+  margin-top: 0.25rem;
+  margin-bottom: 0;
 }
 
 /* footer */
@@ -849,12 +868,22 @@ body.dashboard .page-wrap {
     background-position: right 0 top 0;
     background-repeat: no-repeat;
   }
+
+  .page-card .markdown-body .table-scroll,
+  body.book-chapter .page-card .markdown-body .table-scroll {
+    max-height: min(48dvh, 24rem);
+  }
 }
 
 @media (max-width: 520px) {
   .nav-dashboard .card-entry {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .page-card .markdown-body .table-scroll,
+  body.book-chapter .page-card .markdown-body .table-scroll {
+    max-height: min(42dvh, 18rem);
   }
 }
 
@@ -1356,6 +1385,75 @@ body.book-chapter .markdown-body .heritage-card > p:has(+ blockquote),
   font-size: 0.72rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.markdown-body .trait-card details.card-meta-disclosure,
+.markdown-body .power-card details.card-meta-disclosure,
+.markdown-body .gear-table-card details.card-meta-disclosure,
+.markdown-body .trait-card details.card-tags-disclosure,
+.markdown-body .power-card details.card-tags-disclosure,
+.markdown-body .gear-table-card details.card-tags-disclosure {
+  margin: 12px 0 8px;
+  border: 1px solid rgba(131, 165, 152, 0.35);
+  border-radius: 12px;
+  background: rgba(22, 19, 16, 0.62);
+  overflow: hidden;
+}
+
+.markdown-body .trait-card details.card-meta-disclosure > summary,
+.markdown-body .power-card details.card-meta-disclosure > summary,
+.markdown-body .gear-table-card details.card-meta-disclosure > summary,
+.markdown-body .trait-card details.card-tags-disclosure > summary,
+.markdown-body .power-card details.card-tags-disclosure > summary,
+.markdown-body .gear-table-card details.card-tags-disclosure > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  color: var(--dust);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(131, 165, 152, 0.25);
+}
+
+.markdown-body .trait-card details.card-meta-disclosure > summary::-webkit-details-marker,
+.markdown-body .power-card details.card-meta-disclosure > summary::-webkit-details-marker,
+.markdown-body .gear-table-card details.card-meta-disclosure > summary::-webkit-details-marker,
+.markdown-body .trait-card details.card-tags-disclosure > summary::-webkit-details-marker,
+.markdown-body .power-card details.card-tags-disclosure > summary::-webkit-details-marker,
+.markdown-body .gear-table-card details.card-tags-disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+
+.markdown-body .trait-card details.card-meta-disclosure > summary::before,
+.markdown-body .power-card details.card-meta-disclosure > summary::before,
+.markdown-body .gear-table-card details.card-meta-disclosure > summary::before,
+.markdown-body .trait-card details.card-tags-disclosure > summary::before,
+.markdown-body .power-card details.card-tags-disclosure > summary::before,
+.markdown-body .gear-table-card details.card-tags-disclosure > summary::before {
+  content: "▸ ";
+  color: var(--flare);
+}
+
+.markdown-body .trait-card details.card-meta-disclosure[open] > summary::before,
+.markdown-body .power-card details.card-meta-disclosure[open] > summary::before,
+.markdown-body .gear-table-card details.card-meta-disclosure[open] > summary::before,
+.markdown-body .trait-card details.card-tags-disclosure[open] > summary::before,
+.markdown-body .power-card details.card-tags-disclosure[open] > summary::before,
+.markdown-body .gear-table-card details.card-tags-disclosure[open] > summary::before {
+  content: "▾ ";
+}
+
+.markdown-body .trait-card details.card-meta-disclosure > blockquote,
+.markdown-body .power-card details.card-meta-disclosure > blockquote,
+.markdown-body .gear-table-card details.card-meta-disclosure > blockquote,
+.markdown-body .trait-card details.card-tags-disclosure > blockquote,
+.markdown-body .power-card details.card-tags-disclosure > blockquote,
+.markdown-body .gear-table-card details.card-tags-disclosure > blockquote {
+  margin: 0;
+  border-radius: 0;
+  border-left: none;
+  border-top: 1px solid rgba(254, 128, 25, 0.35);
 }
 
 body.book-chapter .markdown-body .trait-card blockquote p,

@@ -1,0 +1,72 @@
+<script>
+(function () {
+  function normalizeText(text) {
+    return (text || '').replace(/\s+/g, ' ').trim().toLowerCase();
+  }
+
+  function buildDisclosure(labelElement, contentBlockquote, options) {
+    if (!labelElement || !contentBlockquote) return null;
+    var opts = options || {};
+
+    var details = document.createElement('details');
+    details.className = opts.className || 'card-meta-disclosure';
+    if (opts.openByDefault) {
+      details.open = true;
+    }
+
+    var summary = document.createElement('summary');
+    summary.className = (opts.className || 'card-meta-disclosure') + '__summary';
+    summary.textContent = opts.label || 'Meta';
+
+    details.appendChild(summary);
+    details.appendChild(contentBlockquote);
+
+    labelElement.replaceWith(details);
+    return details;
+  }
+
+  function transformCardMeta(card) {
+    if (!card || card.dataset.metaDisclosureApplied === 'true') return;
+
+    var children = Array.prototype.slice.call(card.children || []);
+    for (var i = 0; i < children.length; i++) {
+      var current = children[i];
+      var next = children[i + 1] || null;
+      if (!current || !next) continue;
+      if (current.tagName !== 'P' || next.tagName !== 'BLOCKQUOTE') continue;
+
+      var labelText = normalizeText(current.textContent);
+      if (labelText === 'tags:') {
+        buildDisclosure(current, next, {
+          className: 'card-tags-disclosure',
+          label: 'Tags',
+          openByDefault: true
+        });
+        continue;
+      }
+      if (labelText === 'meta:') {
+        buildDisclosure(current, next, {
+          className: 'card-meta-disclosure',
+          label: 'Meta',
+          openByDefault: false
+        });
+        break;
+      }
+    }
+
+    card.dataset.metaDisclosureApplied = 'true';
+  }
+
+  function initCardMetaDisclosures() {
+    var cards = document.querySelectorAll('.markdown-body .trait-card, .markdown-body .power-card, .markdown-body .gear-table-card');
+    if (!cards.length) return;
+    cards.forEach(transformCardMeta);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCardMetaDisclosures);
+  } else {
+    initCardMetaDisclosures();
+  }
+})();
+</script>
