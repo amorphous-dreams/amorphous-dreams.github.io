@@ -13,24 +13,28 @@
     <a class="header-link header-home-link"
        href="{{ '/' | relative_url }}"
        {% if request_url == '/' %}aria-current="page"{% endif %}>
-      DreamNet Home
+      {% include game_icon.html name='home' class='game-icon--sm' %}
+      <span>DreamNet Home</span>
     </a>
     <a class="header-link"
        href="{{ '/vault/' | relative_url }}"
        {% if request_url contains '/vault/' %}aria-current="page"{% endif %}>
-      Vault
+      {% include game_icon.html name='vault' class='game-icon--sm' %}
+      <span>Vault</span>
     </a>
     {% if vault_parent_href and vault_parent_href != request_url %}
       <a class="header-link header-link--parent"
          href="{{ vault_parent_href | relative_url }}">
-        {{ vault_parent_label | default: 'Parent' }}
+        {% include game_icon.html name='document' class='game-icon--sm' %}
+        <span>{{ vault_parent_label | default: 'Parent' }}</span>
       </a>
     {% endif %}
     <a class="header-link header-link--external"
        href="{{ site.repo | default: 'https://github.com/amorphous-dreams/amorphous-dreams.github.io' }}"
        target="_blank"
        rel="noopener">
-      Reference <span class="header-link-external" aria-hidden="true">↗</span>
+      {% include game_icon.html name='reference' class='game-icon--sm' %}
+      <span>Reference</span>
     </a>
   </nav>
 </header>

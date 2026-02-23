@@ -28,6 +28,11 @@
   --nav-shadow: 0 25px 70px rgba(0, 0, 0, 0.55);
   --page-backdrop: rgba(24, 20, 18, 0.85);
   --header-inline-pad: clamp(16px, 4vw, 20px);
+  --floating-nav-edge: clamp(12px, 2.6vw, 18px);
+  --floating-nav-gap: 10px;
+  --floating-nav-button-height: 42px;
+  --floating-nav-bottom: calc(var(--floating-nav-edge) + env(safe-area-inset-bottom, 0px));
+  --floating-nav-stack-step: calc(var(--floating-nav-button-height) + var(--floating-nav-gap));
 }
 
 /* Reset / base */
@@ -211,6 +216,30 @@ header {
   font-size: 1rem;
 }
 
+.game-icon {
+  width: 2em;
+  height: 2em;
+  display: inline-block;
+  flex-shrink: 0;
+  background-color: currentColor;
+  opacity: 0.92;
+  mask-image: var(--game-icon-url);
+  mask-mode: luminance;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  -webkit-mask-image: var(--game-icon-url);
+  -webkit-mask-source-type: luminance;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+}
+
+.game-icon--sm {
+  width: 1.62rem;
+  height: 1.62rem;
+}
+
 .header-link-note {
   font-size: 0.65rem;
   letter-spacing: 0.08em;
@@ -244,18 +273,22 @@ h1 { font-size: clamp(2rem, 3vw, 3rem); margin: 0 0 12px; letter-spacing:0.04em;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   position: fixed;
-  right: 16px;
-  bottom: 16px;
+  right: var(--floating-nav-edge);
+  bottom: var(--floating-nav-bottom);
   z-index: 20;
   border: 1px solid rgba(184, 187, 38, 0.7);
   background: rgba(31, 36, 21, 0.92);
   color: var(--ink);
   border-radius: 999px;
-  padding: 10px 14px;
+  padding: 8px 14px;
+  min-height: var(--floating-nav-button-height);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: 0.72rem;
+  line-height: 1;
+  white-space: nowrap;
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
 }
 
@@ -277,6 +310,8 @@ h1 { font-size: clamp(2rem, 3vw, 3rem); margin: 0 0 12px; letter-spacing:0.04em;
   border: 1px solid var(--card-border);
   border-radius: 14px;
   padding: 14px;
+  display: grid;
+  gap: 10px;
 }
 
 .operator-nav--desktop {
@@ -299,6 +334,10 @@ h1 { font-size: clamp(2rem, 3vw, 3rem); margin: 0 0 12px; letter-spacing:0.04em;
   list-style: none;
   cursor: pointer;
   padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
   color: rgba(235, 219, 178, 0.75);
   font-size: 0.68rem;
   letter-spacing: 0.06em;
@@ -348,7 +387,7 @@ h1 { font-size: clamp(2rem, 3vw, 3rem); margin: 0 0 12px; letter-spacing:0.04em;
 }
 
 .operator-nav-group .operator-nav__list {
-  padding: 8px;
+  padding: 8px 8px 10px;
 }
 
 .operator-nav-group .operator-nav__link,
@@ -374,7 +413,10 @@ h1 { font-size: clamp(2rem, 3vw, 3rem); margin: 0 0 12px; letter-spacing:0.04em;
 }
 
 .operator-nav__title {
-  margin: 0 0 10px;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 0.8rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -384,7 +426,7 @@ h1 { font-size: clamp(2rem, 3vw, 3rem); margin: 0 0 12px; letter-spacing:0.04em;
 
 .operator-nav__filter {
   width: 100%;
-  margin: 0 0 10px;
+  margin: 0;
   padding: 8px 10px;
   border-radius: 8px;
   border: 1px solid rgba(235, 219, 178, 0.2);
@@ -409,13 +451,13 @@ h1 { font-size: clamp(2rem, 3vw, 3rem); margin: 0 0 12px; letter-spacing:0.04em;
 }
 
 .operator-nav__nexus {
-  margin: 0 0 10px;
-  padding-bottom: 10px;
+  margin: 0;
+  padding-bottom: 8px;
   border-bottom: 1px solid rgba(235, 219, 178, 0.1);
 }
 
 .operator-nav__empty {
-  margin: 4px 0 10px;
+  margin: 2px 0 0;
   color: rgba(235, 219, 178, 0.74);
   font-size: 0.78rem;
 }
@@ -434,7 +476,10 @@ h1 { font-size: clamp(2rem, 3vw, 3rem); margin: 0 0 12px; letter-spacing:0.04em;
 }
 
 .operator-nav__link {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
   color: var(--dust);
   text-decoration: none;
   padding: 8px 10px;
@@ -526,18 +571,22 @@ h1 { font-size: clamp(2rem, 3vw, 3rem); margin: 0 0 12px; letter-spacing:0.04em;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   position: fixed;
-  left: 16px;
-  bottom: 16px;
+  left: var(--floating-nav-edge);
+  bottom: var(--floating-nav-bottom);
   z-index: 21;
   border: 1px solid rgba(131, 165, 152, 0.75);
   background: rgba(28, 34, 33, 0.92);
   color: var(--ink);
   border-radius: 999px;
-  padding: 10px 14px;
+  padding: 8px 14px;
+  min-height: var(--floating-nav-button-height);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: 0.72rem;
+  line-height: 1;
+  white-space: nowrap;
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
 }
 
@@ -559,6 +608,8 @@ h1 { font-size: clamp(2rem, 3vw, 3rem); margin: 0 0 12px; letter-spacing:0.04em;
   border: 1px solid var(--card-border);
   border-radius: 14px;
   padding: 14px;
+  display: grid;
+  gap: 10px;
 }
 
 .page-nav--desktop {
@@ -566,7 +617,10 @@ h1 { font-size: clamp(2rem, 3vw, 3rem); margin: 0 0 12px; letter-spacing:0.04em;
 }
 
 .page-nav__title {
-  margin: 0 0 10px;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 0.8rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -576,7 +630,7 @@ h1 { font-size: clamp(2rem, 3vw, 3rem); margin: 0 0 12px; letter-spacing:0.04em;
 
 .page-nav__filter {
   width: 100%;
-  margin: 0 0 10px;
+  margin: 0;
   padding: 8px 10px;
   border-radius: 8px;
   border: 1px solid rgba(235, 219, 178, 0.2);
@@ -601,7 +655,7 @@ h1 { font-size: clamp(2rem, 3vw, 3rem); margin: 0 0 12px; letter-spacing:0.04em;
 }
 
 .page-nav__empty {
-  margin: 4px 0 10px;
+  margin: 2px 0 0;
   color: rgba(235, 219, 178, 0.74);
   font-size: 0.78rem;
 }
@@ -719,7 +773,7 @@ h1 { font-size: clamp(2rem, 3vw, 3rem); margin: 0 0 12px; letter-spacing:0.04em;
 
 @media (max-width: 979px) {
   .operator-nav-toggle {
-    right: 16px;
+    right: var(--floating-nav-edge);
     left: auto;
     border-color: rgba(184, 187, 38, 0.7);
     background: rgba(31, 36, 21, 0.92);
@@ -743,8 +797,8 @@ h1 { font-size: clamp(2rem, 3vw, 3rem); margin: 0 0 12px; letter-spacing:0.04em;
   }
 
   .page-nav-toggle {
-    left: 16px;
-    bottom: 16px;
+    left: var(--floating-nav-edge);
+    bottom: var(--floating-nav-bottom);
   }
 
   .page-nav-dialog {
@@ -761,8 +815,9 @@ h1 { font-size: clamp(2rem, 3vw, 3rem); margin: 0 0 12px; letter-spacing:0.04em;
 
 @media (min-width: 980px) {
   .operator-nav-toggle {
-    left: 16px;
+    left: var(--floating-nav-edge);
     right: auto;
+    bottom: var(--floating-nav-bottom);
   }
 
   .operator-nav-dialog {
@@ -777,13 +832,13 @@ h1 { font-size: clamp(2rem, 3vw, 3rem); margin: 0 0 12px; letter-spacing:0.04em;
   }
 
   .page-nav-toggle {
-    left: 16px;
+    left: var(--floating-nav-edge);
     right: auto;
-    bottom: 16px;
+    bottom: var(--floating-nav-bottom);
   }
 
   .page-nav-toggle.page-nav-toggle--stacked {
-    bottom: 62px;
+    bottom: calc(var(--floating-nav-bottom) + var(--floating-nav-stack-step));
   }
 
   .page-nav-dialog {
@@ -1013,6 +1068,15 @@ footer {
   text-align: center;
 }
 
+footer a {
+  color: rgba(184, 187, 38, 0.92);
+}
+
+footer a:hover,
+footer a:focus-visible {
+  color: var(--glow);
+}
+
 body.dashboard .page-wrap {
   padding: 32px clamp(24px, 4vw, 80px) 80px;
   display: grid;
@@ -1120,6 +1184,9 @@ body.dashboard .page-wrap {
 }
 
 .nav-dashboard .nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   color: var(--ink);
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -1137,6 +1204,9 @@ body.dashboard .page-wrap {
 }
 
 .nav-dashboard .download-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: var(--flare);
   border-radius: 999px;
   padding: 6px 10px;

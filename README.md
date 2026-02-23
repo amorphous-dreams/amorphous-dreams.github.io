@@ -38,6 +38,13 @@ Jekyll site layer for Amorphous Dreams content, with submodule-driven books and 
 - Site overrides: `assets/theme-overrides.css`
 - Head include order: base first, overrides second (`_includes/gruv_adapter_head.html`)
 
+### Icon Model
+
+- Upstream icon source: `_submodules/game-icons`
+- Curated runtime icon subset: `assets/icons/game-icons`
+- Shared icon include: `_includes/game_icon.html`
+- Consolidated attribution page: `/credits/` (`credits.md`)
+
 ### Navigation And Data Model
 
 - Navigation source of truth: `_data/nav.yml`
