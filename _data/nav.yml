@@ -2,9 +2,9 @@ vault_nodes:
   - label: "Synthetic Dream Machine"
     href: "/vault/synthetic-dream-machine/"
     summary: "Canonical SDM, Amorphous Dreams development, and Wizard Thief Fighter priority line."
-  - label: "More Vaults Soon"
-    href: "/vault/"
-    summary: "Placeholder route for additional modular vaults."
+  - label: "Ars Magica"
+    href: "/vault/Ars-Magica/"
+    summary: "Open Ars corpus browser, errata layer, and ingestion pipeline scaffold."
 
 vault_nexus:
   synthetic_dream_machine:
@@ -62,3 +62,59 @@ vault_nexus:
       - key: "traits_index"
         label: "Traits Index"
         href: "/vault/Synthetic-Dream-Machine/Synthetic_Dream_Machine_03_Traits_Index/"
+  ars_magica:
+    key: "ars_magica"
+    label: "Ars Magica Nexus"
+    href: "/vault/Ars-Magica/"
+    operator_nav:
+      group_order:
+        - "core_rulebooks"
+        - "tribunal_books"
+        - "realms_of_power"
+        - "world_books"
+        - "order_of_hermes"
+        - "scenarios"
+        - "sheets_and_mini_sagas"
+        - "errata"
+        - "legal"
+        - "other"
+      groups:
+        core_rulebooks:
+          label: "Core Rulebooks"
+          match_paths:
+            - "vault/Ars-Magica/books/ars-magica-5th-edition-standard-core-rulebook/"
+        tribunal_books:
+          label: "Tribunal Books"
+          match_paths:
+            - "vault/Ars-Magica/books/lion-and-the-lily-the-norman-tribunal/"
+        realms_of_power:
+          label: "Realms of Power"
+          match_paths:
+            - "vault/Ars-Magica/books/realms-of-power-"
+        world_books:
+          label: "World Books"
+          match_paths:
+            - "vault/Ars-Magica/books/hedge-magic-revised-edition/"
+        order_of_hermes:
+          label: "Order of Hermes"
+          match_paths:
+            - "vault/Ars-Magica/books/house-"
+            - "vault/Ars-Magica/books/guardians-of-the-forests-"
+        scenarios:
+          label: "Scenarios"
+          match_paths:
+            - "vault/Ars-Magica/books/tales-of-"
+            - "vault/Ars-Magica/books/hooks-"
+        sheets_and_mini_sagas:
+          label: "Sheets and Mini-Sagas"
+          match_paths:
+            - "vault/Ars-Magica/books/characters/"
+            - "vault/Ars-Magica/books/mini-sagas/"
+        errata:
+          label: "Errata"
+          match_paths:
+            - "vault/Ars-Magica/errata/"
+        legal:
+          label: "Legal and License"
+          match_paths:
+            - "vault/Ars-Magica/legal/"

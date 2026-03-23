@@ -10,7 +10,7 @@ disable_auto_vault_nodes: true
   <header class="ndu-vault-hub__header">
     <p class="ndu-kicker">Vault Hub</p>
     <h2>Vault Dashboard</h2>
-    <p>Each vault is a modular content node. Synthetic Dream Machine is currently the primary active vault.</p>
+    <p>Each vault is a modular content node. Synthetic Dream Machine and Ars Magica now run as sibling vaults with independent content repos.</p>
   </header>
 
   <div class="ndu-vault-grid">

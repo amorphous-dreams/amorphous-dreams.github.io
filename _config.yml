@@ -26,6 +26,14 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - README.md
+  - vault/Ars-Magica/README.md
+  - vault/Ars-Magica/catalog.yml
+  - vault/Ars-Magica/config
+  - vault/Ars-Magica/config/**
+  - vault/Ars-Magica/scripts
+  - vault/Ars-Magica/scripts/**
+  - vault/Ars-Magica/sources
+  - vault/Ars-Magica/sources/**
 # Global publishing settings
 future: true
 unpublished: true
