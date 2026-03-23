@@ -66,6 +66,16 @@ vault_nexus:
     key: "ars_magica"
     label: "Ars Magica Nexus"
     href: "/vault/Ars-Magica/"
+    books:
+      - key: "ars-magica-5th-edition-standard-core-rulebook"
+        label: "Ars Magica 5th Edition STANDARD Core Rulebook"
+        href: "/vault/Ars-Magica/ars-magica-5th-edition-standard-core-rulebook/"
+      - key: "realms-of-power-faerie"
+        label: "Realms of Power: Faerie"
+        href: "/vault/Ars-Magica/realms-of-power-faerie/"
+      - key: "realms-of-power-magic"
+        label: "Realms of Power: Magic"
+        href: "/vault/Ars-Magica/realms-of-power-magic/"
     operator_nav:
       group_order:
         - "core_rulebooks"

@@ -2546,7 +2546,15 @@ body.book-chapter .markdown-body .heritage-card blockquote p,
   gap: 8px;
 }
 
+.ars-magica-hub .sdm-hub-shell {
+  gap: 8px;
+}
+
 .sdm-hub .sdm-hub-section {
+  margin: 0;
+}
+
+.ars-magica-hub .sdm-hub-section {
   margin: 0;
 }
 
@@ -2554,7 +2562,16 @@ body.book-chapter .markdown-body .heritage-card blockquote p,
   font-size: clamp(1.45rem, 6.2vw, 2.05rem);
 }
 
+.ars-magica-hub .sdm-hub-hero h2 {
+  font-size: clamp(1.45rem, 6.2vw, 2.05rem);
+}
+
 .sdm-hub .sdm-hub-section h3 {
+  font-size: 1.14rem;
+  margin: 0 0 6px;
+}
+
+.ars-magica-hub .sdm-hub-section h3 {
   font-size: 1.14rem;
   margin: 0 0 6px;
 }
@@ -2565,12 +2582,26 @@ body.book-chapter .markdown-body .heritage-card blockquote p,
   color: var(--flare);
 }
 
+.ars-magica-hub .sdm-hub-section h4 {
+  font-size: 0.94rem;
+  margin: 9px 0 6px;
+  color: var(--flare);
+}
+
 .sdm-hub .sdm-hub-card h5 {
+  font-size: 1.14rem;
+}
+
+.ars-magica-hub .sdm-hub-card h5 {
   font-size: 1.14rem;
 }
 
 @media (min-width: 1080px) {
   .sdm-hub .sdm-hub-shell {
+    gap: 12px;
+  }
+
+  .ars-magica-hub .sdm-hub-shell {
     gap: 12px;
   }
 }
@@ -2580,6 +2611,7 @@ body.book-chapter,
 body.archive,
 body.vault-hub,
 body.sdm-hub,
+body.ars-magica-hub,
 body.dreamnet-home {
   background-color: #120f0a;
   background-image: var(--page-gradient);
