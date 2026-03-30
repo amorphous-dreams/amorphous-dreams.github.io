@@ -34,7 +34,10 @@
         {% include game_icon.html name='page-nav' class='game-icon--sm' %}
         <span>Page Nav - {{ page.title | default: 'Untitled Document' | escape }}</span>
       </h2>
-      <button class="page-nav-dialog__close js-page-nav-close" type="button">Close</button>
+      <button class="page-nav-dialog__close js-page-nav-close" type="button" aria-label="Close Page navigation panel">
+        {% include game_icon.html name='cancel' class='game-icon--sm' %}
+        <span>Close</span>
+      </button>
     </div>
 
     <nav class="page-nav page-nav--mobile" aria-label="Page navigation mobile">

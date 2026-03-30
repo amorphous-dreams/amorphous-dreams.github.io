@@ -97,6 +97,10 @@
 {% assign vault_ctx_book_href = nil %}
 {% assign vault_ctx_book_label = nil %}
 
+{% if vault_ctx_book_key == nil and page.ars_book_slug %}
+  {% assign vault_ctx_book_key = page.ars_book_slug %}
+{% endif %}
+
 {% if vault_ctx_book_key == nil and vault_ctx_sibling_books %}
   {% for sibling_book in vault_ctx_sibling_books %}
     {% assign sibling_href = sibling_book.href | default: '' %}
@@ -105,7 +109,9 @@
       {% unless sibling_href_last_char == '/' %}
         {% assign sibling_href = sibling_href | append: '/' %}
       {% endunless %}
-      {% if vault_ctx_request_url == sibling_href %}
+      {% assign sibling_href_size = sibling_href | size %}
+      {% assign vault_ctx_request_head = vault_ctx_request_url | slice: 0, sibling_href_size %}
+      {% if vault_ctx_request_url == sibling_href or vault_ctx_request_head == sibling_href %}
         {% assign vault_ctx_book_key = sibling_book.key | default: nil %}
         {% break %}
       {% endif %}

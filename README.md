@@ -18,6 +18,7 @@ Jekyll site layer for Amorphous Dreams content, with submodule-driven books and 
   - `title`
   - `published: true`
 - Main SDM navigation page: `vault/synthetic-dream-machine.md`
+- Main Ars Magica navigation page: `vault/Ars-Magica.md`
 
 ### Layout Model
 
@@ -52,6 +53,7 @@ Jekyll site layer for Amorphous Dreams content, with submodule-driven books and 
 - SDM navigation is organized as two categories:
   - `Synthetic Dream Machine`: canonical SDM books by Luka Rejec
   - `Amorphous Dreams`: Elyncia and FTLS in-development material
+- Ars Magica navigation is organized by Open Ars release families and includes a separate errata/legal layer.
 
 ## Development
 

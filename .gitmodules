@@ -9,3 +9,6 @@
 [submodule "_submodules/game-icons"]
 	path = _submodules/game-icons
 	url = https://github.com/joshuafontany/game-icons.git
+[submodule "vault/Ars-Magica"]
+	path = vault/Ars-Magica
+	url = https://github.com/joshuafontany/Ars-Magica.git
