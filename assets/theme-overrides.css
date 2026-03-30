@@ -1783,6 +1783,7 @@ body.book-chapter .markdown-body .heritage-card > p:has(+ blockquote),
 .markdown-body .trait-card details.card-meta-disclosure,
 .markdown-body .power-card details.card-meta-disclosure,
 .markdown-body .gear-table-card details.card-meta-disclosure,
+.markdown-body .power-card details.card-osr-disclosure,
 .markdown-body .trait-card details.card-tags-disclosure,
 .markdown-body .power-card details.card-tags-disclosure,
 .markdown-body .gear-table-card details.card-tags-disclosure {
@@ -1796,6 +1797,7 @@ body.book-chapter .markdown-body .heritage-card > p:has(+ blockquote),
 .markdown-body .trait-card details.card-meta-disclosure > summary,
 .markdown-body .power-card details.card-meta-disclosure > summary,
 .markdown-body .gear-table-card details.card-meta-disclosure > summary,
+.markdown-body .power-card details.card-osr-disclosure > summary,
 .markdown-body .trait-card details.card-tags-disclosure > summary,
 .markdown-body .power-card details.card-tags-disclosure > summary,
 .markdown-body .gear-table-card details.card-tags-disclosure > summary {
@@ -1812,6 +1814,7 @@ body.book-chapter .markdown-body .heritage-card > p:has(+ blockquote),
 .markdown-body .trait-card details.card-meta-disclosure > summary::-webkit-details-marker,
 .markdown-body .power-card details.card-meta-disclosure > summary::-webkit-details-marker,
 .markdown-body .gear-table-card details.card-meta-disclosure > summary::-webkit-details-marker,
+.markdown-body .power-card details.card-osr-disclosure > summary::-webkit-details-marker,
 .markdown-body .trait-card details.card-tags-disclosure > summary::-webkit-details-marker,
 .markdown-body .power-card details.card-tags-disclosure > summary::-webkit-details-marker,
 .markdown-body .gear-table-card details.card-tags-disclosure > summary::-webkit-details-marker {
@@ -1821,6 +1824,7 @@ body.book-chapter .markdown-body .heritage-card > p:has(+ blockquote),
 .markdown-body .trait-card details.card-meta-disclosure > summary::before,
 .markdown-body .power-card details.card-meta-disclosure > summary::before,
 .markdown-body .gear-table-card details.card-meta-disclosure > summary::before,
+.markdown-body .power-card details.card-osr-disclosure > summary::before,
 .markdown-body .trait-card details.card-tags-disclosure > summary::before,
 .markdown-body .power-card details.card-tags-disclosure > summary::before,
 .markdown-body .gear-table-card details.card-tags-disclosure > summary::before {
@@ -1831,6 +1835,7 @@ body.book-chapter .markdown-body .heritage-card > p:has(+ blockquote),
 .markdown-body .trait-card details.card-meta-disclosure[open] > summary::before,
 .markdown-body .power-card details.card-meta-disclosure[open] > summary::before,
 .markdown-body .gear-table-card details.card-meta-disclosure[open] > summary::before,
+.markdown-body .power-card details.card-osr-disclosure[open] > summary::before,
 .markdown-body .trait-card details.card-tags-disclosure[open] > summary::before,
 .markdown-body .power-card details.card-tags-disclosure[open] > summary::before,
 .markdown-body .gear-table-card details.card-tags-disclosure[open] > summary::before {
@@ -1840,12 +1845,19 @@ body.book-chapter .markdown-body .heritage-card > p:has(+ blockquote),
 .markdown-body .trait-card details.card-meta-disclosure > blockquote,
 .markdown-body .power-card details.card-meta-disclosure > blockquote,
 .markdown-body .gear-table-card details.card-meta-disclosure > blockquote,
+.markdown-body .power-card details.card-osr-disclosure > blockquote,
 .markdown-body .trait-card details.card-tags-disclosure > blockquote,
 .markdown-body .power-card details.card-tags-disclosure > blockquote,
 .markdown-body .gear-table-card details.card-tags-disclosure > blockquote {
   margin: 0;
   border-radius: 0;
   border-left: none;
+  border-top: 1px solid rgba(254, 128, 25, 0.35);
+}
+
+.markdown-body .power-card details.card-osr-disclosure > p {
+  margin: 0;
+  padding: 12px 14px;
   border-top: 1px solid rgba(254, 128, 25, 0.35);
 }
 
