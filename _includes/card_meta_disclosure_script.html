@@ -28,30 +28,44 @@
   function transformCardMeta(card) {
     if (!card || card.dataset.metaDisclosureApplied === 'true') return;
 
+    var isPowerCard = card.classList && card.classList.contains('power-card');
+
+    var disclosureConfig = {
+      'tags:': {
+        className: 'card-tags-disclosure',
+        label: 'Tags',
+        openByDefault: true,
+        contentTags: ['BLOCKQUOTE']
+      },
+      'meta:': {
+        className: 'card-meta-disclosure',
+        label: 'Meta',
+        openByDefault: false,
+        contentTags: ['BLOCKQUOTE']
+      },
+      'osr:': {
+        className: 'card-osr-disclosure',
+        label: 'OSR Reference',
+        openByDefault: false,
+        contentTags: ['BLOCKQUOTE', 'P'],
+        cardTypes: ['power-card']
+      }
+    };
+
     var children = Array.prototype.slice.call(card.children || []);
     for (var i = 0; i < children.length; i++) {
       var current = children[i];
       var next = children[i + 1] || null;
       if (!current || !next) continue;
-      if (current.tagName !== 'P' || next.tagName !== 'BLOCKQUOTE') continue;
+      if (current.tagName !== 'P') continue;
 
       var labelText = normalizeText(current.textContent);
-      if (labelText === 'tags:') {
-        buildDisclosure(current, next, {
-          className: 'card-tags-disclosure',
-          label: 'Tags',
-          openByDefault: true
-        });
-        continue;
-      }
-      if (labelText === 'meta:') {
-        buildDisclosure(current, next, {
-          className: 'card-meta-disclosure',
-          label: 'Meta',
-          openByDefault: false
-        });
-        break;
-      }
+      var config = disclosureConfig[labelText];
+      if (!config) continue;
+      if (config.cardTypes && config.cardTypes.indexOf('power-card') !== -1 && !isPowerCard) continue;
+      if (config.contentTags.indexOf(next.tagName) === -1) continue;
+
+      buildDisclosure(current, next, config);
     }
 
     card.dataset.metaDisclosureApplied = 'true';
